@@ -84,16 +84,16 @@
 
 
 
-<meta name="description" content="今天偶尔尝试用fastjson进行map嵌套解析，但是出现了”$ref”:”$.null”,代码如下：1234567Map&amp;lt;String, String&amp;gt; map = new HashMap&amp;lt;&amp;gt;();String str=&amp;quot;111&amp;quo">
+<meta name="description" content="WSL下SSH连接服务器每次都需要输入密码，未免有些繁琐，于是找到配置不需要密码的方法  先在本机上生成密钥对，一路回车就行。  1ssh-keygen -t rsa  此时会在 ~/.ssh 目录下生成id_rsa, id_rsa.pub两个密钥对，将id_rsa.pub发送到服务器需要登陆的用户的.ssh目录并重命">
 <meta property="og:type" content="article">
-<meta property="og:title" content="fastjson转json时出现&quot;$ref&quot;">
-<meta property="og:url" content="http://yoursite.com/2017/11/28/fastjson出现$ref/index.html">
+<meta property="og:title" content="SSH免密登陆">
+<meta property="og:url" content="http://yoursite.com/2018/02/17/SSH免密登陆/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="今天偶尔尝试用fastjson进行map嵌套解析，但是出现了”$ref”:”$.null”,代码如下：1234567Map&amp;lt;String, String&amp;gt; map = new HashMap&amp;lt;&amp;gt;();String str=&amp;quot;111&amp;quot;;map.put(str, str);Map&amp;lt;Map, Map&amp;gt; map1 = new HashMap&amp;lt;&amp;">
-<meta property="og:updated_time" content="2017-11-28T05:37:14.473Z">
+<meta property="og:description" content="WSL下SSH连接服务器每次都需要输入密码，未免有些繁琐，于是找到配置不需要密码的方法  先在本机上生成密钥对，一路回车就行。  1ssh-keygen -t rsa  此时会在 ~/.ssh 目录下生成id_rsa, id_rsa.pub两个密钥对，将id_rsa.pub发送到服务器需要登陆的用户的.ssh目录并重命名为 authorized_keys   1scp ~/.ssh/id_rsa.">
+<meta property="og:updated_time" content="2018-02-17T13:07:40.772Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="fastjson转json时出现&quot;$ref&quot;">
-<meta name="twitter:description" content="今天偶尔尝试用fastjson进行map嵌套解析，但是出现了”$ref”:”$.null”,代码如下：1234567Map&amp;lt;String, String&amp;gt; map = new HashMap&amp;lt;&amp;gt;();String str=&amp;quot;111&amp;quot;;map.put(str, str);Map&amp;lt;Map, Map&amp;gt; map1 = new HashMap&amp;lt;&amp;">
+<meta name="twitter:title" content="SSH免密登陆">
+<meta name="twitter:description" content="WSL下SSH连接服务器每次都需要输入密码，未免有些繁琐，于是找到配置不需要密码的方法  先在本机上生成密钥对，一路回车就行。  1ssh-keygen -t rsa  此时会在 ~/.ssh 目录下生成id_rsa, id_rsa.pub两个密钥对，将id_rsa.pub发送到服务器需要登陆的用户的.ssh目录并重命名为 authorized_keys   1scp ~/.ssh/id_rsa.">
 
 
 
@@ -111,7 +111,7 @@
   };
 </script>
 
-  <title> fastjson转json时出现"$ref" | 南楼 </title>
+  <title> SSH免密登陆 | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -231,7 +231,7 @@
             
             
               
-                fastjson转json时出现"$ref"
+                SSH免密登陆
               
             
           </h1>
@@ -243,8 +243,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-11-28T13:37:26+08:00" content="2017-11-28">
-              2017-11-28
+            <time itemprop="dateCreated" datetime="2018-02-17T20:28:03+08:00" content="2018-02-17">
+              2018-02-17
             </time>
           </span>
 
@@ -271,11 +271,18 @@
       
 
       
-        <p>今天偶尔尝试用fastjson进行map嵌套解析，但是出现了”$ref”:”$.null”,<br>代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, String&gt; map = new HashMap&lt;&gt;();</span><br><span class="line">String str=&quot;111&quot;;</span><br><span class="line">map.put(str, str);</span><br><span class="line">Map&lt;Map, Map&gt; map1 = new HashMap&lt;&gt;();</span><br><span class="line">map1.put(map, map);</span><br><span class="line">String json =JSONObject.toJSONString(map1);</span><br><span class="line">System.out.println(json);</span><br></pre></td></tr></table></figure></p>
-<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&quot;111&quot;:&quot;111&quot;&#125;:&#123;&quot;$ref&quot;:&quot;$.null&quot;&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>原来fastjson会检测循环引用，如果存在，会用$ref代替掉，<br>解决如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JSONObject.toJSONString(map1,SerializerFeature.DisableCircularReferenceDetect);</span><br></pre></td></tr></table></figure></p>
-<p>关闭循环引用检测</p>
-<p>或者前端使用fastjson的js插件</p>
+        <p>WSL下SSH连接服务器每次都需要输入密码，未免有些繁琐，于是找到配置不需要密码的方法</p>
+<ol>
+<li>先在本机上生成密钥对，一路回车就行。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+<ol>
+<li>此时会在 ~/.ssh 目录下生成id_rsa, id_rsa.pub两个密钥对，将id_rsa.pub发送到服务器需要登陆的用户的.ssh目录并重命名为 authorized_keys </li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp ~/.ssh/id_rsa.pub user@hostname:.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+<ol>
+<li>完。</li>
+</ol>
 
       
     </div>
@@ -300,17 +307,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/11/27/JDBC连接数据库/" rel="next" title="JDBC连接数据库">
-                <i class="fa fa-chevron-left"></i> JDBC连接数据库
+              <a href="/2017/11/30/update返回受影响的行数/" rel="next" title="mysql中返回执行update语句时受影响的行数">
+                <i class="fa fa-chevron-left"></i> mysql中返回执行update语句时受影响的行数
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/11/30/update返回受影响的行数/" rel="prev" title="mysql中返回执行update语句时受影响的行数">
-                mysql中返回执行update语句时受影响的行数 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
