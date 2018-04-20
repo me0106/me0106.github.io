@@ -84,17 +84,17 @@
 
 
 
-<meta name="description" content="偶然看到有人问这个问题，然后试了一下executeUpdate()；1preparedStatement.executeUpdate(); 发现返回的是匹配查询条件的行数，并非受影响的行，在数据命令行中的表现形式为：123MariaDB [java]&amp;gt; UPDATE user SET username=&amp;apos;1&amp;apos; WHERE uid=1 OR uid=2;Query OK,">
+<meta name="description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mysql中返回执行update语句时受影响的行数">
-<meta property="og:url" content="http://yoursite.com/2017/11/30/update返回受影响的行数/index.html">
+<meta property="og:title" content="spring自定义注解默认bean的id">
+<meta property="og:url" content="http://yoursite.com/2018/04/21/Spring自定义注解生成的默认bean-id名/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="偶然看到有人问这个问题，然后试了一下executeUpdate()；1preparedStatement.executeUpdate(); 发现返回的是匹配查询条件的行数，并非受影响的行，在数据命令行中的表现形式为：123MariaDB [java]&amp;gt; UPDATE user SET username=&amp;apos;1&amp;apos; WHERE uid=1 OR uid=2;Query OK,">
+<meta property="og:description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2017-11-30T12:19:55.820Z">
+<meta property="og:updated_time" content="2018-04-20T17:52:16.392Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="mysql中返回执行update语句时受影响的行数">
-<meta name="twitter:description" content="偶然看到有人问这个问题，然后试了一下executeUpdate()；1preparedStatement.executeUpdate(); 发现返回的是匹配查询条件的行数，并非受影响的行，在数据命令行中的表现形式为：123MariaDB [java]&amp;gt; UPDATE user SET username=&amp;apos;1&amp;apos; WHERE uid=1 OR uid=2;Query OK,">
+<meta name="twitter:title" content="spring自定义注解默认bean的id">
+<meta name="twitter:description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
 
 
 
@@ -112,7 +112,7 @@
   };
 </script>
 
-  <title> mysql中返回执行update语句时受影响的行数 | 南楼 </title>
+  <title> spring自定义注解默认bean的id | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -232,7 +232,7 @@
             
             
               
-                mysql中返回执行update语句时受影响的行数
+                spring自定义注解默认bean的id
               
             
           </h1>
@@ -244,8 +244,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-11-30T20:16:21+08:00" content="2017-11-30">
-              2017-11-30
+            <time itemprop="dateCreated" datetime="2018-04-21T01:28:59+08:00" content="2018-04-21">
+              2018-04-21
             </time>
           </span>
 
@@ -272,12 +272,11 @@
       
 
       
-        <p>偶然看到有人问这个问题，然后试了一下executeUpdate()；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">preparedStatement.executeUpdate();</span><br></pre></td></tr></table></figure></p>
-<p>发现返回的是匹配查询条件的行数，并非受影响的行，在数据命令行中的表现形式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [java]&gt; UPDATE user SET username=&apos;1&apos; WHERE uid=1 OR uid=2;</span><br><span class="line">Query OK, 0 rows affected (0.48 sec)</span><br><span class="line">Rows matched: 2  Changed: 0  Warnings: 0</span><br></pre></td></tr></table></figure></p>
-<p>即返回的结果是matched，并非changed，</p>
-<h2 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h2><p>在连接数据库的url中增加一个参数：useAffectedRows=true<br>如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String url=&quot;jdbc:mysql://localhost:3306/java?useAffectedRows=true&quot;;</span><br></pre></td></tr></table></figure></p>
-<p>之后，使用executeUpdate返回的即是受影响的行数。</p>
-<p>！注意：此参数只有在mysql-connector版本大于5.1.7的情况下才有效。</p>
+        <p>晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。<br>经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。</p>
+<p>spring生成默认bean的id时会取类名首字母小写，具体代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    类路径org.springframework.context.annotation.AnnotationBeanNameGenerator</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">	String beanClassName = definition.getBeanClassName();</span><br><span class="line">	Assert.state(beanClassName != <span class="keyword">null</span>, <span class="string">"No bean class name set"</span>);</span><br><span class="line">	String shortClassName = ClassUtils.getShortName(beanClassName);</span><br><span class="line">	<span class="keyword">return</span> Introspector.decapitalize(shortClassName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>只要重写该方法为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> definition.getBeanClassName();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>并且在spring配置文件中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:component-scan base-package=&quot;me.nanlou&quot; name-generator=&quot;xxxxxx&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>指定我们重写的BeanNameGenerator类即可。</p>
 
       
     </div>
@@ -302,17 +301,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/11/28/fastjson出现$ref/" rel="next" title="fastjson转json时出现"$ref"">
-                <i class="fa fa-chevron-left"></i> fastjson转json时出现"$ref"
+              <a href="/2018/02/17/SSH免密登陆/" rel="next" title="SSH免密登陆">
+                <i class="fa fa-chevron-left"></i> SSH免密登陆
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/02/17/SSH免密登陆/" rel="prev" title="SSH免密登陆">
-                SSH免密登陆 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -412,7 +407,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案："><span class="nav-number">1.</span> <span class="nav-text">解决方案：</span></a></li></ol></div>
+              <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
         </section>

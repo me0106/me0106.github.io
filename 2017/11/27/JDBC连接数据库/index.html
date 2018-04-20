@@ -84,17 +84,18 @@
 
 
 
-<meta name="description" content="许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。环境：开发工具idea，数据库MariaDB，驱动mysql。 1Class.forName(&amp;quot;com.mysql.jdbc.Driver&amp;quot;); //加载MySQL驱动 1Connection conn=Dri">
+<meta name="description" content="许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。环境：开发工具idea，数据库MariaDB，驱动mysql。 1Class.forName(&quot;com.mysql.jdbc.Driver&quot;); //加载MySQL驱动 1Connection conn=DriverManager.getConnection(url,username,password) //获取连接 1Pr">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JDBC连接数据库">
 <meta property="og:url" content="http://yoursite.com/2017/11/27/JDBC连接数据库/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。环境：开发工具idea，数据库MariaDB，驱动mysql。 1Class.forName(&amp;quot;com.mysql.jdbc.Driver&amp;quot;); //加载MySQL驱动 1Connection conn=DriverManager.getConnection(url,username,password)">
+<meta property="og:description" content="许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。环境：开发工具idea，数据库MariaDB，驱动mysql。 1Class.forName(&quot;com.mysql.jdbc.Driver&quot;); //加载MySQL驱动 1Connection conn=DriverManager.getConnection(url,username,password) //获取连接 1Pr">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2017/11/27/JDBC连接数据库/example.jpg">
-<meta property="og:updated_time" content="2017-11-27T04:08:34.688Z">
+<meta property="og:updated_time" content="2018-04-20T17:52:18.378Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JDBC连接数据库">
-<meta name="twitter:description" content="许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。环境：开发工具idea，数据库MariaDB，驱动mysql。 1Class.forName(&amp;quot;com.mysql.jdbc.Driver&amp;quot;); //加载MySQL驱动 1Connection conn=DriverManager.getConnection(url,username,password)">
+<meta name="twitter:description" content="许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。环境：开发工具idea，数据库MariaDB，驱动mysql。 1Class.forName(&quot;com.mysql.jdbc.Driver&quot;); //加载MySQL驱动 1Connection conn=DriverManager.getConnection(url,username,password) //获取连接 1Pr">
 <meta name="twitter:image" content="http://yoursite.com/2017/11/27/JDBC连接数据库/example.jpg">
 
 
@@ -274,17 +275,17 @@
 
       
         <p>许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。<br>环境：开发工具idea，数据库MariaDB，驱动mysql。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(&quot;com.mysql.jdbc.Driver&quot;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</span><br></pre></td></tr></table></figure>
 <p>//加载MySQL驱动</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection conn=DriverManager.getConnection(url,username,password)</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection conn=DriverManager.getConnection(url,username,password)</span><br></pre></td></tr></table></figure>
 <p>//获取连接</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PreparedStatement statement=conn.prepareStatement(&quot;SELECT * FROM user WHERE uid=?&quot;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PreparedStatement statement=conn.prepareStatement(<span class="string">"SELECT * FROM user WHERE uid=?"</span>);</span><br></pre></td></tr></table></figure>
 <p>//加入需要执行的语句，’ ? ‘ 是占位符,即所需要的参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">statement.setInt(1,2);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">statement.setInt(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
 <p>//在第一个占位符处插入int型的参数2</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ResultSet set=statement.executeQuery();</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ResultSet set=statement.executeQuery();</span><br></pre></td></tr></table></figure>
 <p>//执行查询，并将返回结果集ResultSet</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">while(set.next())&#123;</span><br><span class="line"></span><br><span class="line">    String username=set.getString(&quot;username&quot;);</span><br><span class="line">    </span><br><span class="line">    System.out.print(username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(set.next())&#123;</span><br><span class="line"></span><br><span class="line">    String username=set.getString(<span class="string">"username"</span>);</span><br><span class="line">    </span><br><span class="line">    System.out.print(username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>//set.next(),表示将结果指针移动到下一行，若不为空，则返回true。</p>
 <p>//set.getString(“username”)表示获取当前行字段为username的String类型的数据，同样的还有getInt(),getBoolean等方法</p>
 <p>！注意：set的结果指针是指向第一行结果之前的的位置，在调用next()方法后移动到第一行。</p>
@@ -392,7 +393,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">6</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
