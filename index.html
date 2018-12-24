@@ -231,6 +231,113 @@
             
               
                 
+                <a class="post-title-link" href="/2018/12/24/从jdbc到mybatis/" itemprop="url">
+                  从jdbc到mybatis
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-12-24T09:06:34+08:00" content="2018-12-24">
+              2018-12-24
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="QueryRunner"><a href="#QueryRunner" class="headerlink" title="QueryRunner"></a>QueryRunner</h1><p>原始jdbc已经写了，此处不再赘述，<br>从工具类说起，Apache有个工具包叫 common-dbutils，<br>是一个用来进行数据库简化查询的包，<br>进行了轻量级的jdbc封装。</p>
+<p>调用方式是通过 QueryRunner类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QueryRunner runner = <span class="keyword">new</span> QueryRunner();</span><br></pre></td></tr></table></figure>
+<p>sql如下</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">user</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> =<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>用QueryRunner类执行sql查询：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User user=runner.query(conn,sql,<span class="keyword">new</span> BeanHandler&lt;&gt;(User.class));</span><br></pre></td></tr></table></figure>
+<p>参数分别是：connection(数据库连接)，sql，结果映射器，(实际上还有第四个参数，参数化查询);</p>
+<p>dbutils可以自动把数据库查询到的属性自动映射到BeanHandler所指示的具体实体类上，简化了大量的样板代码(ResultSet#getXXXX)。</p>
+<h2 id="mybatis"><a href="#mybatis" class="headerlink" title="mybatis"></a>mybatis</h2><p>简单工程中sql查询可以完全被QueryRunner类解决，但是大工程中，因为sql和java代码的耦合，以及每次都需要手动建立QueryRunner对象和传入DataSource/Connection，会导致维护问题，mybatis将sql和java代码分离，以及深度封装了jdbc的查询，我们只需要关注对数据库的curd即可。</p>
+<p>mybatis分为sql和interface两部分，通过xml的namespace进行对接口的关联<br><img src="/2018/12/24/从jdbc到mybatis/mapper-and-interface.png" alt="从jdbc到mybatis"></p>
+<p>如图：</p>
+<p>每个mapper.xml文件对应一个interface，namespace对应类的全限定名；</p>
+<p>每个insert/delete/update/select的id对应一个接口方法；</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2018/12/24/BufferedReader的lines问题/" itemprop="url">
                   BufferedReader的lines
                 </a>
@@ -331,8 +438,8 @@
             
               
                 
-                <a class="post-title-link" href="/2018/10/27/update返回受影响的行数/" itemprop="url">
-                  mysql中返回执行update语句时受影响的行数
+                <a class="post-title-link" href="/2018/04/21/JDBC连接数据库/" itemprop="url">
+                  JDBC连接数据库
                 </a>
               
             
@@ -345,8 +452,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-10-27T16:55:52+08:00" content="2018-10-27">
-              2018-10-27
+            <time itemprop="dateCreated" datetime="2018-04-21T01:52:18+08:00" content="2018-04-21">
+              2018-04-21
             </time>
           </span>
 
@@ -375,12 +482,23 @@
       
         
           
-            <p>偶然看到有人问这个问题，然后试了一下executeUpdate()；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">preparedStatement.executeUpdate();</span><br></pre></td></tr></table></figure></p>
-<p>发现返回的是匹配查询条件的行数，并非受影响的行，在数据命令行中的表现形式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [java]&gt; UPDATE user SET username=&apos;1&apos; WHERE uid=1 OR uid=2;</span><br><span class="line">Query OK, 0 rows affected (0.48 sec)</span><br><span class="line">Rows matched: 2  Changed: 0  Warnings: 0</span><br></pre></td></tr></table></figure></p>
-<p>即返回的结果是matched，并非changed，</p>
-<h2 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h2><p>在连接数据库的url中增加一个参数：useAffectedRows=true<br>如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String url=&quot;jdbc:mysql://localhost:3306/java?useAffectedRows=true&quot;;</span><br></pre></td></tr></table></figure></p>
-<p>之后，使用executeUpdate返回的即是受影响的行数。</p>
-<p>！注意：此参数只有在mysql-connector版本大于5.1.7的情况下才有效。</p>
+            <p>许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。<br>环境：开发工具idea，数据库MariaDB，驱动mysql。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</span><br></pre></td></tr></table></figure>
+<p>//加载MySQL驱动</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection conn=DriverManager.getConnection(url,username,password)</span><br></pre></td></tr></table></figure>
+<p>//获取连接</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PreparedStatement statement=conn.prepareStatement(<span class="string">"SELECT * FROM user WHERE uid=?"</span>);</span><br></pre></td></tr></table></figure>
+<p>//加入需要执行的语句，’ ? ‘ 是占位符,即所需要的参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">statement.setInt(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>//在第一个占位符处插入int型的参数2</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ResultSet set=statement.executeQuery();</span><br></pre></td></tr></table></figure>
+<p>//执行查询，并将返回结果集ResultSet</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(set.next())&#123;</span><br><span class="line"></span><br><span class="line">    String username=set.getString(<span class="string">"username"</span>);</span><br><span class="line">    </span><br><span class="line">    System.out.print(username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>//set.next(),表示将结果指针移动到下一行，若不为空，则返回true。</p>
+<p>//set.getString(“username”)表示获取当前行字段为username的String类型的数据，同样的还有getInt(),getBoolean等方法</p>
+<p>！注意：set的结果指针是指向第一行结果之前的的位置，在调用next()方法后移动到第一行。</p>
+<p>示例如下:</p>
+<p><img src="/2018/04/21/JDBC连接数据库/example.jpg" alt=""></p>
 
           
         
@@ -430,7 +548,105 @@
             
               
                 
-                <a class="post-title-link" href="/2018/10/27/SSH免密登陆/" itemprop="url">
+                <a class="post-title-link" href="/2018/04/21/Spring自定义注解生成的默认bean-id名/" itemprop="url">
+                  spring自定义注解默认bean的id
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-04-21T01:52:16+08:00" content="2018-04-21">
+              2018-04-21
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。<br>经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。</p>
+<p>spring生成默认bean的id时会取类名首字母小写，具体代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    类路径org.springframework.context.annotation.AnnotationBeanNameGenerator</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">	String beanClassName = definition.getBeanClassName();</span><br><span class="line">	Assert.state(beanClassName != <span class="keyword">null</span>, <span class="string">"No bean class name set"</span>);</span><br><span class="line">	String shortClassName = ClassUtils.getShortName(beanClassName);</span><br><span class="line">	<span class="keyword">return</span> Introspector.decapitalize(shortClassName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>只要重写该方法为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> definition.getBeanClassName();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>并且在spring配置文件中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:component-scan base-package=&quot;me.nanlou&quot; name-generator=&quot;xxxxxx&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>指定我们重写的BeanNameGenerator类即可。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/17/SSH免密登陆/" itemprop="url">
                   SSH免密登陆
                 </a>
               
@@ -444,8 +660,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-10-27T16:55:52+08:00" content="2018-10-27">
-              2018-10-27
+            <time itemprop="dateCreated" datetime="2018-02-17T21:07:40+08:00" content="2018-02-17">
+              2018-02-17
             </time>
           </span>
 
@@ -535,8 +751,8 @@
             
               
                 
-                <a class="post-title-link" href="/2018/10/27/Spring自定义注解生成的默认bean-id名/" itemprop="url">
-                  spring自定义注解默认bean的id
+                <a class="post-title-link" href="/2017/11/30/update返回受影响的行数/" itemprop="url">
+                  mysql中返回执行update语句时受影响的行数
                 </a>
               
             
@@ -549,8 +765,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-10-27T16:55:52+08:00" content="2018-10-27">
-              2018-10-27
+            <time itemprop="dateCreated" datetime="2017-11-30T20:19:55+08:00" content="2017-11-30">
+              2017-11-30
             </time>
           </span>
 
@@ -579,11 +795,12 @@
       
         
           
-            <p>晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。<br>经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。</p>
-<p>spring生成默认bean的id时会取类名首字母小写，具体代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    类路径org.springframework.context.annotation.AnnotationBeanNameGenerator</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">	String beanClassName = definition.getBeanClassName();</span><br><span class="line">	Assert.state(beanClassName != <span class="keyword">null</span>, <span class="string">"No bean class name set"</span>);</span><br><span class="line">	String shortClassName = ClassUtils.getShortName(beanClassName);</span><br><span class="line">	<span class="keyword">return</span> Introspector.decapitalize(shortClassName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>只要重写该方法为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> definition.getBeanClassName();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>并且在spring配置文件中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:component-scan base-package=&quot;me.nanlou&quot; name-generator=&quot;xxxxxx&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
-<p>指定我们重写的BeanNameGenerator类即可。</p>
+            <p>偶然看到有人问这个问题，然后试了一下executeUpdate()；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">preparedStatement.executeUpdate();</span><br></pre></td></tr></table></figure></p>
+<p>发现返回的是匹配查询条件的行数，并非受影响的行，在数据命令行中的表现形式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [java]&gt; UPDATE user SET username=&apos;1&apos; WHERE uid=1 OR uid=2;</span><br><span class="line">Query OK, 0 rows affected (0.48 sec)</span><br><span class="line">Rows matched: 2  Changed: 0  Warnings: 0</span><br></pre></td></tr></table></figure></p>
+<p>即返回的结果是matched，并非changed，</p>
+<h2 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h2><p>在连接数据库的url中增加一个参数：useAffectedRows=true<br>如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String url=&quot;jdbc:mysql://localhost:3306/java?useAffectedRows=true&quot;;</span><br></pre></td></tr></table></figure></p>
+<p>之后，使用executeUpdate返回的即是受影响的行数。</p>
+<p>！注意：此参数只有在mysql-connector版本大于5.1.7的情况下才有效。</p>
 
           
         
@@ -633,8 +850,8 @@
             
               
                 
-                <a class="post-title-link" href="/2018/10/27/JDBC连接数据库/" itemprop="url">
-                  JDBC连接数据库
+                <a class="post-title-link" href="/2017/11/28/fastjson出现$ref/" itemprop="url">
+                  fastjson转json时出现"$ref"
                 </a>
               
             
@@ -647,8 +864,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-10-27T16:55:52+08:00" content="2018-10-27">
-              2018-10-27
+            <time itemprop="dateCreated" datetime="2017-11-28T13:37:14+08:00" content="2017-11-28">
+              2017-11-28
             </time>
           </span>
 
@@ -677,23 +894,11 @@
       
         
           
-            <p>许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。<br>环境：开发工具idea，数据库MariaDB，驱动mysql。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</span><br></pre></td></tr></table></figure>
-<p>//加载MySQL驱动</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection conn=DriverManager.getConnection(url,username,password)</span><br></pre></td></tr></table></figure>
-<p>//获取连接</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PreparedStatement statement=conn.prepareStatement(<span class="string">"SELECT * FROM user WHERE uid=?"</span>);</span><br></pre></td></tr></table></figure>
-<p>//加入需要执行的语句，’ ? ‘ 是占位符,即所需要的参数</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">statement.setInt(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
-<p>//在第一个占位符处插入int型的参数2</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ResultSet set=statement.executeQuery();</span><br></pre></td></tr></table></figure>
-<p>//执行查询，并将返回结果集ResultSet</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(set.next())&#123;</span><br><span class="line"></span><br><span class="line">    String username=set.getString(<span class="string">"username"</span>);</span><br><span class="line">    </span><br><span class="line">    System.out.print(username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>//set.next(),表示将结果指针移动到下一行，若不为空，则返回true。</p>
-<p>//set.getString(“username”)表示获取当前行字段为username的String类型的数据，同样的还有getInt(),getBoolean等方法</p>
-<p>！注意：set的结果指针是指向第一行结果之前的的位置，在调用next()方法后移动到第一行。</p>
-<p>示例如下:</p>
-<p><img src="/2018/10/27/JDBC连接数据库/example.jpg" alt=""></p>
+            <p>今天偶尔尝试用fastjson进行map嵌套解析，但是出现了”$ref”:”$.null”,<br>代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, String&gt; map = new HashMap&lt;&gt;();</span><br><span class="line">String str=&quot;111&quot;;</span><br><span class="line">map.put(str, str);</span><br><span class="line">Map&lt;Map, Map&gt; map1 = new HashMap&lt;&gt;();</span><br><span class="line">map1.put(map, map);</span><br><span class="line">String json =JSONObject.toJSONString(map1);</span><br><span class="line">System.out.println(json);</span><br></pre></td></tr></table></figure></p>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&quot;111&quot;:&quot;111&quot;&#125;:&#123;&quot;$ref&quot;:&quot;$.null&quot;&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>原来fastjson会检测循环引用，如果存在，会用$ref代替掉，<br>解决如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JSONObject.toJSONString(map1,SerializerFeature.DisableCircularReferenceDetect);</span><br></pre></td></tr></table></figure></p>
+<p>关闭循环引用检测</p>
+<p>或者前端使用fastjson的js插件</p>
 
           
         
@@ -743,7 +948,7 @@
             
               
                 
-                <a class="post-title-link" href="/2018/10/27/hello-world/" itemprop="url">
+                <a class="post-title-link" href="/2017/11/21/hello-world/" itemprop="url">
                   Hello World
                 </a>
               
@@ -757,8 +962,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-10-27T16:55:52+08:00" content="2018-10-27">
-              2018-10-27
+            <time itemprop="dateCreated" datetime="2017-11-21T13:51:06+08:00" content="2017-11-21">
+              2017-11-21
             </time>
           </span>
 
@@ -796,104 +1001,6 @@
 <p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
 <h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/10/27/fastjson出现$ref/" itemprop="url">
-                  fastjson转json时出现"$ref"
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-10-27T16:55:52+08:00" content="2018-10-27">
-              2018-10-27
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天偶尔尝试用fastjson进行map嵌套解析，但是出现了”$ref”:”$.null”,<br>代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, String&gt; map = new HashMap&lt;&gt;();</span><br><span class="line">String str=&quot;111&quot;;</span><br><span class="line">map.put(str, str);</span><br><span class="line">Map&lt;Map, Map&gt; map1 = new HashMap&lt;&gt;();</span><br><span class="line">map1.put(map, map);</span><br><span class="line">String json =JSONObject.toJSONString(map1);</span><br><span class="line">System.out.println(json);</span><br></pre></td></tr></table></figure></p>
-<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&quot;111&quot;:&quot;111&quot;&#125;:&#123;&quot;$ref&quot;:&quot;$.null&quot;&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>原来fastjson会检测循环引用，如果存在，会用$ref代替掉，<br>解决如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JSONObject.toJSONString(map1,SerializerFeature.DisableCircularReferenceDetect);</span><br></pre></td></tr></table></figure></p>
-<p>关闭循环引用检测</p>
-<p>或者前端使用fastjson的js插件</p>
 
           
         
@@ -963,7 +1070,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

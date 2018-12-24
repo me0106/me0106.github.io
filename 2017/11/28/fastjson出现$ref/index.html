@@ -84,17 +84,17 @@
 
 
 
-<meta name="description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta name="description" content="今天偶尔尝试用fastjson进行map嵌套解析，但是出现了”$ref”:”$.null”,代码如下：1234567Map&amp;lt;String, String&amp;gt; map = new HashMap&amp;lt;&amp;gt;();String str=&amp;quot;111&amp;quot;;map.put(str, str);Map&amp;lt;Map, Map&amp;gt; map1 = new HashMap&amp;lt;&amp;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="BufferedReader的lines">
-<meta property="og:url" content="http://yoursite.com/2018/12/24/BufferedReader的lines问题/index.html">
+<meta property="og:title" content="fastjson转json时出现&quot;$ref&quot;">
+<meta property="og:url" content="http://yoursite.com/2017/11/28/fastjson出现$ref/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta property="og:description" content="今天偶尔尝试用fastjson进行map嵌套解析，但是出现了”$ref”:”$.null”,代码如下：1234567Map&amp;lt;String, String&amp;gt; map = new HashMap&amp;lt;&amp;gt;();String str=&amp;quot;111&amp;quot;;map.put(str, str);Map&amp;lt;Map, Map&amp;gt; map1 = new HashMap&amp;lt;&amp;">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-24T01:15:19.764Z">
+<meta property="og:updated_time" content="2018-12-24T01:10:35.449Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BufferedReader的lines">
-<meta name="twitter:description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta name="twitter:title" content="fastjson转json时出现&quot;$ref&quot;">
+<meta name="twitter:description" content="今天偶尔尝试用fastjson进行map嵌套解析，但是出现了”$ref”:”$.null”,代码如下：1234567Map&amp;lt;String, String&amp;gt; map = new HashMap&amp;lt;&amp;gt;();String str=&amp;quot;111&amp;quot;;map.put(str, str);Map&amp;lt;Map, Map&amp;gt; map1 = new HashMap&amp;lt;&amp;">
 
 
 
@@ -112,7 +112,7 @@
   };
 </script>
 
-  <title> BufferedReader的lines | 南楼 </title>
+  <title> fastjson转json时出现"$ref" | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -232,7 +232,7 @@
             
             
               
-                BufferedReader的lines
+                fastjson转json时出现"$ref"
               
             
           </h1>
@@ -244,8 +244,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-12-24T08:37:22+08:00" content="2018-12-24">
-              2018-12-24
+            <time itemprop="dateCreated" datetime="2017-11-28T13:37:14+08:00" content="2017-11-28">
+              2017-11-28
             </time>
           </span>
 
@@ -272,14 +272,12 @@
       
 
       
-        <p>用socket处理http请求的时候，为了省事，直接使用BufferedReader类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BufferedReader r = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket.getInputStream()));</span><br><span class="line">String res = r.lines().collect(Collectors.joining());</span><br></pre></td></tr></table></figure>
-<p>发现在进行lines处理的时候，整个线程会阻塞,但是只处理第一行的时候不会阻塞，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String res = r.lines().findFirst().orElse(<span class="string">""</span>);</span><br></pre></td></tr></table></figure>
-<p>查询之后才知道，lines方式本质是循环(通过迭代器)调用readLine方法，且readLine方法只有遇到\r ,\n ,\r\n才会返回，当stream处理到最后一行的时候，猜测可能是requestHeaders并没有换行符，导致readLine一直等待，<br>解决：最后决定不使用lines方法，直接用read(char[])方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] chars = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">1024</span>];</span><br><span class="line">r.read(chars);</span><br><span class="line">String request = String.valueOf(chars).trim();</span><br></pre></td></tr></table></figure>
-<p>也可以用CharBuffer，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CharBuffer allocate = CharBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">r.read(allocate);</span><br><span class="line">System.out.println(allocate.flip().toString());</span><br></pre></td></tr></table></figure>
+        <p>今天偶尔尝试用fastjson进行map嵌套解析，但是出现了”$ref”:”$.null”,<br>代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, String&gt; map = new HashMap&lt;&gt;();</span><br><span class="line">String str=&quot;111&quot;;</span><br><span class="line">map.put(str, str);</span><br><span class="line">Map&lt;Map, Map&gt; map1 = new HashMap&lt;&gt;();</span><br><span class="line">map1.put(map, map);</span><br><span class="line">String json =JSONObject.toJSONString(map1);</span><br><span class="line">System.out.println(json);</span><br></pre></td></tr></table></figure></p>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&quot;111&quot;:&quot;111&quot;&#125;:&#123;&quot;$ref&quot;:&quot;$.null&quot;&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>原来fastjson会检测循环引用，如果存在，会用$ref代替掉，<br>解决如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JSONObject.toJSONString(map1,SerializerFeature.DisableCircularReferenceDetect);</span><br></pre></td></tr></table></figure></p>
+<p>关闭循环引用检测</p>
+<p>或者前端使用fastjson的js插件</p>
+
       
     </div>
 
@@ -303,16 +301,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/21/JDBC连接数据库/" rel="next" title="JDBC连接数据库">
-                <i class="fa fa-chevron-left"></i> JDBC连接数据库
+              <a href="/2017/11/21/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/24/从jdbc到mybatis/" rel="prev" title="从jdbc到mybatis">
-                从jdbc到mybatis <i class="fa fa-chevron-right"></i>
+              <a href="/2017/11/30/update返回受影响的行数/" rel="prev" title="mysql中返回执行update语句时受影响的行数">
+                mysql中返回执行update语句时受影响的行数 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

@@ -84,17 +84,19 @@
 
 
 
-<meta name="description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta name="description" content="QueryRunner原始jdbc已经写了，此处不再赘述，从工具类说起，Apache有个工具包叫 common-dbutils，是一个用来进行数据库简化查询的包，进行了轻量级的jdbc封装。 调用方式是通过 QueryRunner类 1QueryRunner runner = new QueryRunner(); sql如下 1SELECT * FROM user WHERE id =1 用Que">
 <meta property="og:type" content="article">
-<meta property="og:title" content="BufferedReader的lines">
-<meta property="og:url" content="http://yoursite.com/2018/12/24/BufferedReader的lines问题/index.html">
+<meta property="og:title" content="从jdbc到mybatis">
+<meta property="og:url" content="http://yoursite.com/2018/12/24/从jdbc到mybatis/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta property="og:description" content="QueryRunner原始jdbc已经写了，此处不再赘述，从工具类说起，Apache有个工具包叫 common-dbutils，是一个用来进行数据库简化查询的包，进行了轻量级的jdbc封装。 调用方式是通过 QueryRunner类 1QueryRunner runner = new QueryRunner(); sql如下 1SELECT * FROM user WHERE id =1 用Que">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-24T01:15:19.764Z">
+<meta property="og:image" content="http://yoursite.com/2018/12/24/从jdbc到mybatis/mapper-and-interface.png">
+<meta property="og:updated_time" content="2018-12-24T01:47:42.042Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BufferedReader的lines">
-<meta name="twitter:description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta name="twitter:title" content="从jdbc到mybatis">
+<meta name="twitter:description" content="QueryRunner原始jdbc已经写了，此处不再赘述，从工具类说起，Apache有个工具包叫 common-dbutils，是一个用来进行数据库简化查询的包，进行了轻量级的jdbc封装。 调用方式是通过 QueryRunner类 1QueryRunner runner = new QueryRunner(); sql如下 1SELECT * FROM user WHERE id =1 用Que">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/24/从jdbc到mybatis/mapper-and-interface.png">
 
 
 
@@ -112,7 +114,7 @@
   };
 </script>
 
-  <title> BufferedReader的lines | 南楼 </title>
+  <title> 从jdbc到mybatis | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -232,7 +234,7 @@
             
             
               
-                BufferedReader的lines
+                从jdbc到mybatis
               
             
           </h1>
@@ -244,7 +246,7 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-12-24T08:37:22+08:00" content="2018-12-24">
+            <time itemprop="dateCreated" datetime="2018-12-24T09:06:34+08:00" content="2018-12-24">
               2018-12-24
             </time>
           </span>
@@ -272,14 +274,21 @@
       
 
       
-        <p>用socket处理http请求的时候，为了省事，直接使用BufferedReader类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BufferedReader r = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket.getInputStream()));</span><br><span class="line">String res = r.lines().collect(Collectors.joining());</span><br></pre></td></tr></table></figure>
-<p>发现在进行lines处理的时候，整个线程会阻塞,但是只处理第一行的时候不会阻塞，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String res = r.lines().findFirst().orElse(<span class="string">""</span>);</span><br></pre></td></tr></table></figure>
-<p>查询之后才知道，lines方式本质是循环(通过迭代器)调用readLine方法，且readLine方法只有遇到\r ,\n ,\r\n才会返回，当stream处理到最后一行的时候，猜测可能是requestHeaders并没有换行符，导致readLine一直等待，<br>解决：最后决定不使用lines方法，直接用read(char[])方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] chars = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">1024</span>];</span><br><span class="line">r.read(chars);</span><br><span class="line">String request = String.valueOf(chars).trim();</span><br></pre></td></tr></table></figure>
-<p>也可以用CharBuffer，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CharBuffer allocate = CharBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">r.read(allocate);</span><br><span class="line">System.out.println(allocate.flip().toString());</span><br></pre></td></tr></table></figure>
+        <h1 id="QueryRunner"><a href="#QueryRunner" class="headerlink" title="QueryRunner"></a>QueryRunner</h1><p>原始jdbc已经写了，此处不再赘述，<br>从工具类说起，Apache有个工具包叫 common-dbutils，<br>是一个用来进行数据库简化查询的包，<br>进行了轻量级的jdbc封装。</p>
+<p>调用方式是通过 QueryRunner类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QueryRunner runner = <span class="keyword">new</span> QueryRunner();</span><br></pre></td></tr></table></figure>
+<p>sql如下</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">user</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> =<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>用QueryRunner类执行sql查询：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User user=runner.query(conn,sql,<span class="keyword">new</span> BeanHandler&lt;&gt;(User.class));</span><br></pre></td></tr></table></figure>
+<p>参数分别是：connection(数据库连接)，sql，结果映射器，(实际上还有第四个参数，参数化查询);</p>
+<p>dbutils可以自动把数据库查询到的属性自动映射到BeanHandler所指示的具体实体类上，简化了大量的样板代码(ResultSet#getXXXX)。</p>
+<h2 id="mybatis"><a href="#mybatis" class="headerlink" title="mybatis"></a>mybatis</h2><p>简单工程中sql查询可以完全被QueryRunner类解决，但是大工程中，因为sql和java代码的耦合，以及每次都需要手动建立QueryRunner对象和传入DataSource/Connection，会导致维护问题，mybatis将sql和java代码分离，以及深度封装了jdbc的查询，我们只需要关注对数据库的curd即可。</p>
+<p>mybatis分为sql和interface两部分，通过xml的namespace进行对接口的关联<br><img src="/2018/12/24/从jdbc到mybatis/mapper-and-interface.png" alt="从jdbc到mybatis"></p>
+<p>如图：</p>
+<p>每个mapper.xml文件对应一个interface，namespace对应类的全限定名；</p>
+<p>每个insert/delete/update/select的id对应一个接口方法；</p>
+
       
     </div>
 
@@ -303,17 +312,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/21/JDBC连接数据库/" rel="next" title="JDBC连接数据库">
-                <i class="fa fa-chevron-left"></i> JDBC连接数据库
+              <a href="/2018/12/24/BufferedReader的lines问题/" rel="next" title="BufferedReader的lines">
+                <i class="fa fa-chevron-left"></i> BufferedReader的lines
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/12/24/从jdbc到mybatis/" rel="prev" title="从jdbc到mybatis">
-                从jdbc到mybatis <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -413,7 +418,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#QueryRunner"><span class="nav-number">1.</span> <span class="nav-text">QueryRunner</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mybatis"><span class="nav-number">1.1.</span> <span class="nav-text">mybatis</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

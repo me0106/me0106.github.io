@@ -84,17 +84,17 @@
 
 
 
-<meta name="description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta name="description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
 <meta property="og:type" content="article">
-<meta property="og:title" content="BufferedReader的lines">
-<meta property="og:url" content="http://yoursite.com/2018/12/24/BufferedReader的lines问题/index.html">
+<meta property="og:title" content="spring自定义注解默认bean的id">
+<meta property="og:url" content="http://yoursite.com/2018/04/21/Spring自定义注解生成的默认bean-id名/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta property="og:description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-24T01:15:19.764Z">
+<meta property="og:updated_time" content="2018-12-24T01:11:13.401Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BufferedReader的lines">
-<meta name="twitter:description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta name="twitter:title" content="spring自定义注解默认bean的id">
+<meta name="twitter:description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
 
 
 
@@ -112,7 +112,7 @@
   };
 </script>
 
-  <title> BufferedReader的lines | 南楼 </title>
+  <title> spring自定义注解默认bean的id | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -232,7 +232,7 @@
             
             
               
-                BufferedReader的lines
+                spring自定义注解默认bean的id
               
             
           </h1>
@@ -244,8 +244,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-12-24T08:37:22+08:00" content="2018-12-24">
-              2018-12-24
+            <time itemprop="dateCreated" datetime="2018-04-21T01:52:16+08:00" content="2018-04-21">
+              2018-04-21
             </time>
           </span>
 
@@ -272,14 +272,12 @@
       
 
       
-        <p>用socket处理http请求的时候，为了省事，直接使用BufferedReader类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BufferedReader r = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket.getInputStream()));</span><br><span class="line">String res = r.lines().collect(Collectors.joining());</span><br></pre></td></tr></table></figure>
-<p>发现在进行lines处理的时候，整个线程会阻塞,但是只处理第一行的时候不会阻塞，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String res = r.lines().findFirst().orElse(<span class="string">""</span>);</span><br></pre></td></tr></table></figure>
-<p>查询之后才知道，lines方式本质是循环(通过迭代器)调用readLine方法，且readLine方法只有遇到\r ,\n ,\r\n才会返回，当stream处理到最后一行的时候，猜测可能是requestHeaders并没有换行符，导致readLine一直等待，<br>解决：最后决定不使用lines方法，直接用read(char[])方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] chars = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">1024</span>];</span><br><span class="line">r.read(chars);</span><br><span class="line">String request = String.valueOf(chars).trim();</span><br></pre></td></tr></table></figure>
-<p>也可以用CharBuffer，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CharBuffer allocate = CharBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">r.read(allocate);</span><br><span class="line">System.out.println(allocate.flip().toString());</span><br></pre></td></tr></table></figure>
+        <p>晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。<br>经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。</p>
+<p>spring生成默认bean的id时会取类名首字母小写，具体代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    类路径org.springframework.context.annotation.AnnotationBeanNameGenerator</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">	String beanClassName = definition.getBeanClassName();</span><br><span class="line">	Assert.state(beanClassName != <span class="keyword">null</span>, <span class="string">"No bean class name set"</span>);</span><br><span class="line">	String shortClassName = ClassUtils.getShortName(beanClassName);</span><br><span class="line">	<span class="keyword">return</span> Introspector.decapitalize(shortClassName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>只要重写该方法为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> definition.getBeanClassName();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>并且在spring配置文件中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:component-scan base-package=&quot;me.nanlou&quot; name-generator=&quot;xxxxxx&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>指定我们重写的BeanNameGenerator类即可。</p>
+
       
     </div>
 
@@ -303,16 +301,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/21/JDBC连接数据库/" rel="next" title="JDBC连接数据库">
-                <i class="fa fa-chevron-left"></i> JDBC连接数据库
+              <a href="/2018/02/17/SSH免密登陆/" rel="next" title="SSH免密登陆">
+                <i class="fa fa-chevron-left"></i> SSH免密登陆
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/24/从jdbc到mybatis/" rel="prev" title="从jdbc到mybatis">
-                从jdbc到mybatis <i class="fa fa-chevron-right"></i>
+              <a href="/2018/04/21/JDBC连接数据库/" rel="prev" title="JDBC连接数据库">
+                JDBC连接数据库 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

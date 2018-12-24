@@ -84,17 +84,19 @@
 
 
 
-<meta name="description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta name="description" content="许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。环境：开发工具idea，数据库MariaDB，驱动mysql。 1Class.forName(&quot;com.mysql.jdbc.Driver&quot;); //加载MySQL驱动 1Connection conn=DriverManager.getConnection(url,username,password) //获取连接 1Pr">
 <meta property="og:type" content="article">
-<meta property="og:title" content="BufferedReader的lines">
-<meta property="og:url" content="http://yoursite.com/2018/12/24/BufferedReader的lines问题/index.html">
+<meta property="og:title" content="JDBC连接数据库">
+<meta property="og:url" content="http://yoursite.com/2018/04/21/JDBC连接数据库/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta property="og:description" content="许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。环境：开发工具idea，数据库MariaDB，驱动mysql。 1Class.forName(&quot;com.mysql.jdbc.Driver&quot;); //加载MySQL驱动 1Connection conn=DriverManager.getConnection(url,username,password) //获取连接 1Pr">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-24T01:15:19.764Z">
+<meta property="og:image" content="http://yoursite.com/2018/04/21/JDBC连接数据库/example.jpg">
+<meta property="og:updated_time" content="2018-12-24T01:09:23.688Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BufferedReader的lines">
-<meta name="twitter:description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta name="twitter:title" content="JDBC连接数据库">
+<meta name="twitter:description" content="许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。环境：开发工具idea，数据库MariaDB，驱动mysql。 1Class.forName(&quot;com.mysql.jdbc.Driver&quot;); //加载MySQL驱动 1Connection conn=DriverManager.getConnection(url,username,password) //获取连接 1Pr">
+<meta name="twitter:image" content="http://yoursite.com/2018/04/21/JDBC连接数据库/example.jpg">
 
 
 
@@ -112,7 +114,7 @@
   };
 </script>
 
-  <title> BufferedReader的lines | 南楼 </title>
+  <title> JDBC连接数据库 | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -232,7 +234,7 @@
             
             
               
-                BufferedReader的lines
+                JDBC连接数据库
               
             
           </h1>
@@ -244,8 +246,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-12-24T08:37:22+08:00" content="2018-12-24">
-              2018-12-24
+            <time itemprop="dateCreated" datetime="2018-04-21T01:52:18+08:00" content="2018-04-21">
+              2018-04-21
             </time>
           </span>
 
@@ -272,14 +274,24 @@
       
 
       
-        <p>用socket处理http请求的时候，为了省事，直接使用BufferedReader类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BufferedReader r = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket.getInputStream()));</span><br><span class="line">String res = r.lines().collect(Collectors.joining());</span><br></pre></td></tr></table></figure>
-<p>发现在进行lines处理的时候，整个线程会阻塞,但是只处理第一行的时候不会阻塞，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String res = r.lines().findFirst().orElse(<span class="string">""</span>);</span><br></pre></td></tr></table></figure>
-<p>查询之后才知道，lines方式本质是循环(通过迭代器)调用readLine方法，且readLine方法只有遇到\r ,\n ,\r\n才会返回，当stream处理到最后一行的时候，猜测可能是requestHeaders并没有换行符，导致readLine一直等待，<br>解决：最后决定不使用lines方法，直接用read(char[])方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] chars = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">1024</span>];</span><br><span class="line">r.read(chars);</span><br><span class="line">String request = String.valueOf(chars).trim();</span><br></pre></td></tr></table></figure>
-<p>也可以用CharBuffer，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CharBuffer allocate = CharBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">r.read(allocate);</span><br><span class="line">System.out.println(allocate.flip().toString());</span><br></pre></td></tr></table></figure>
+        <p>许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。<br>环境：开发工具idea，数据库MariaDB，驱动mysql。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</span><br></pre></td></tr></table></figure>
+<p>//加载MySQL驱动</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection conn=DriverManager.getConnection(url,username,password)</span><br></pre></td></tr></table></figure>
+<p>//获取连接</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PreparedStatement statement=conn.prepareStatement(<span class="string">"SELECT * FROM user WHERE uid=?"</span>);</span><br></pre></td></tr></table></figure>
+<p>//加入需要执行的语句，’ ? ‘ 是占位符,即所需要的参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">statement.setInt(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>//在第一个占位符处插入int型的参数2</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ResultSet set=statement.executeQuery();</span><br></pre></td></tr></table></figure>
+<p>//执行查询，并将返回结果集ResultSet</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(set.next())&#123;</span><br><span class="line"></span><br><span class="line">    String username=set.getString(<span class="string">"username"</span>);</span><br><span class="line">    </span><br><span class="line">    System.out.print(username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>//set.next(),表示将结果指针移动到下一行，若不为空，则返回true。</p>
+<p>//set.getString(“username”)表示获取当前行字段为username的String类型的数据，同样的还有getInt(),getBoolean等方法</p>
+<p>！注意：set的结果指针是指向第一行结果之前的的位置，在调用next()方法后移动到第一行。</p>
+<p>示例如下:</p>
+<p><img src="/2018/04/21/JDBC连接数据库/example.jpg" alt=""></p>
+
       
     </div>
 
@@ -303,16 +315,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/21/JDBC连接数据库/" rel="next" title="JDBC连接数据库">
-                <i class="fa fa-chevron-left"></i> JDBC连接数据库
+              <a href="/2018/04/21/Spring自定义注解生成的默认bean-id名/" rel="next" title="spring自定义注解默认bean的id">
+                <i class="fa fa-chevron-left"></i> spring自定义注解默认bean的id
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/24/从jdbc到mybatis/" rel="prev" title="从jdbc到mybatis">
-                从jdbc到mybatis <i class="fa fa-chevron-right"></i>
+              <a href="/2018/12/24/BufferedReader的lines问题/" rel="prev" title="BufferedReader的lines">
+                BufferedReader的lines <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

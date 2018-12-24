@@ -84,17 +84,13 @@
 
 
 
-<meta name="description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
-<meta property="og:type" content="article">
-<meta property="og:title" content="BufferedReader的lines">
-<meta property="og:url" content="http://yoursite.com/2018/12/24/BufferedReader的lines问题/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="南楼">
+<meta property="og:url" content="http://yoursite.com/archives/2017/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-24T01:15:19.764Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BufferedReader的lines">
-<meta name="twitter:description" content="用socket处理http请求的时候，为了省事，直接使用BufferedReader类 12BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));String res = r.lines().collect(Collectors.joining()); 发现在进行lines处理的时">
+<meta name="twitter:title" content="南楼">
 
 
 
@@ -112,7 +108,7 @@
   };
 </script>
 
-  <title> BufferedReader的lines | 南楼 </title>
+  <title> 归档 | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -133,7 +129,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <div class="container one-collumn sidebar-position-left  page-archive  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -211,125 +207,140 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-collapse">
+    <span class="archive-move-on"></span>
+
+    <span class="archive-page-counter">
+      
+      
+      
+        
+      
+      嗯..! 目前共计 8 篇日志。 继续努力。
+    </span>
+
     
 
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                BufferedReader的lines
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-12-24T08:37:22+08:00" content="2018-12-24">
-              2018-12-24
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
-      
-        <p>用socket处理http请求的时候，为了省事，直接使用BufferedReader类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BufferedReader r = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket.getInputStream()));</span><br><span class="line">String res = r.lines().collect(Collectors.joining());</span><br></pre></td></tr></table></figure>
-<p>发现在进行lines处理的时候，整个线程会阻塞,但是只处理第一行的时候不会阻塞，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String res = r.lines().findFirst().orElse(<span class="string">""</span>);</span><br></pre></td></tr></table></figure>
-<p>查询之后才知道，lines方式本质是循环(通过迭代器)调用readLine方法，且readLine方法只有遇到\r ,\n ,\r\n才会返回，当stream处理到最后一行的时候，猜测可能是requestHeaders并没有换行符，导致readLine一直等待，<br>解决：最后决定不使用lines方法，直接用read(char[])方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] chars = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">1024</span>];</span><br><span class="line">r.read(chars);</span><br><span class="line">String request = String.valueOf(chars).trim();</span><br></pre></td></tr></table></figure>
-<p>也可以用CharBuffer，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CharBuffer allocate = CharBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">r.read(allocate);</span><br><span class="line">System.out.println(allocate.flip().toString());</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    <div>
       
         
-      
-    </div>
-
-    <div>
-      
-        
-
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/04/21/JDBC连接数据库/" rel="next" title="JDBC连接数据库">
-                <i class="fa fa-chevron-left"></i> JDBC连接数据库
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/12/24/从jdbc到mybatis/" rel="prev" title="从jdbc到mybatis">
-                从jdbc到mybatis <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
+        <div class="collection-title">
+          <h2 class="archive-year motion-element" id="archive-year-2017">2017</h2>
         </div>
       
+      
 
       
-      
-    </footer>
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
+        
+            <a class="post-title-link" href="/2017/11/30/update返回受影响的行数/" itemprop="url">
+              
+                <span itemprop="name">mysql中返回执行update语句时受影响的行数</span>
+              
+            </a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2017-11-30T20:19:55+08:00"
+              content="2017-11-30" >
+          11-30
+        </time>
+      </div>
+
+    </header>
   </article>
 
 
 
-    <div class="post-spread">
+    
+
       
-    </div>
-  </div>
+      
+      
+
+      
+      
+
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
+        
+            <a class="post-title-link" href="/2017/11/28/fastjson出现$ref/" itemprop="url">
+              
+                <span itemprop="name">fastjson转json时出现"$ref"</span>
+              
+            </a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2017-11-28T13:37:14+08:00"
+              content="2017-11-28" >
+          11-28
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+    
+
+      
+      
+      
+
+      
+      
+
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
+        
+            <a class="post-title-link" href="/2017/11/21/hello-world/" itemprop="url">
+              
+                <span itemprop="name">Hello World</span>
+              
+            </a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2017-11-21T13:51:06+08:00"
+              content="2017-11-21" >
+          11-21
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+    
+
+  </section>
+
+  
+
 
 
           </div>
@@ -337,10 +348,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-  </div>
-
 
         </div>
         
@@ -360,17 +367,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel ">
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -406,17 +404,6 @@
 
       </section>
 
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-            
-              
-            
-            
-              <p class="post-toc-empty">此文章未包含目录</p>
-            
-          </div>
-        </section>
       
 
     </div>
@@ -520,9 +507,11 @@
 
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
-
+  
+    <script type="text/javascript" id="motion.page.archive">
+      $('.archive-year').velocity('transition.slideLeftIn');
+    </script>
+  
 
 
   
