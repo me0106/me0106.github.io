@@ -231,8 +231,8 @@
             
               
                 
-                <a class="post-title-link" href="/2018/12/24/从jdbc到mybatis/" itemprop="url">
-                  从jdbc到mybatis
+                <a class="post-title-link" href="/2018/12/25/mybatis源码浅析/" itemprop="url">
+                  mybatis源码浅析
                 </a>
               
             
@@ -245,8 +245,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-12-24T09:06:34+08:00" content="2018-12-24">
-              2018-12-24
+            <time itemprop="dateCreated" datetime="2018-12-25T08:24:07+08:00" content="2018-12-25">
+              2018-12-25
             </time>
           </span>
 
@@ -275,20 +275,14 @@
       
         
           
-            <h1 id="QueryRunner"><a href="#QueryRunner" class="headerlink" title="QueryRunner"></a>QueryRunner</h1><p>原始jdbc已经写了，此处不再赘述，<br>从工具类说起，Apache有个工具包叫 common-dbutils，<br>是一个用来进行数据库简化查询的包，<br>进行了轻量级的jdbc封装。</p>
-<p>调用方式是通过 QueryRunner类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QueryRunner runner = <span class="keyword">new</span> QueryRunner();</span><br></pre></td></tr></table></figure>
-<p>sql如下</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">user</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> =<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<p>用QueryRunner类执行sql查询：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User user=runner.query(conn,sql,<span class="keyword">new</span> BeanHandler&lt;&gt;(User.class));</span><br></pre></td></tr></table></figure>
-<p>参数分别是：connection(数据库连接)，sql，结果映射器，(实际上还有第四个参数，参数化查询);</p>
-<p>dbutils可以自动把数据库查询到的属性自动映射到BeanHandler所指示的具体实体类上，简化了大量的样板代码(ResultSet#getXXXX)。</p>
-<h2 id="mybatis"><a href="#mybatis" class="headerlink" title="mybatis"></a>mybatis</h2><p>简单工程中sql查询可以完全被QueryRunner类解决，但是大工程中，因为sql和java代码的耦合，以及每次都需要手动建立QueryRunner对象和传入DataSource/Connection，会导致维护问题，mybatis将sql和java代码分离，以及深度封装了jdbc的查询，我们只需要关注对数据库的curd即可。</p>
-<p>mybatis分为sql和interface两部分，通过xml的namespace进行对接口的关联<br><img src="/2018/12/24/从jdbc到mybatis/mapper-and-interface.png" alt="从jdbc到mybatis"></p>
-<p>如图：</p>
-<p>每个mapper.xml文件对应一个interface，namespace对应类的全限定名；</p>
-<p>每个insert/delete/update/select的id对应一个接口方法；</p>
+            <p>常用mybatis的Mapper接口形式，但是没怎么查看具体实现，抽空看了一下，</p>
+<p>实现Mapper接口的动态实现在 <em>org.apache.ibatis.binding</em> 包，该包下面有<em>BindingException,MapperMethod,MapperProxy,MapperProxyFactory,MapperRegistry</em>几个类。<br><img src="/2018/12/25/mybatis源码浅析/binding.png" alt="bind"></p>
+<h3 id="BindingException"><a href="#BindingException" class="headerlink" title="BindingException"></a><strong>BindingException</strong></h3><p>异常类，在进行MapperBind过程中发生的异常</p>
+<h3 id="MapperMethod"><a href="#MapperMethod" class="headerlink" title="MapperMethod"></a><strong>MapperMethod</strong></h3><p>每个<em>MapperMethod</em>代表一个接口方法，并且和<em>xml标签的sql语句标签</em>进行关联</p>
+<p><em>MapperMethod</em>有一个静态内部类<em>SqlCommand</em>，以及一个该类的对象，<em>command</em></p>
+<p><img src="/2018/12/25/mybatis源码浅析/sqlCommand.png" alt="command"><br><em>command</em>对象指明了<em>MapperMethod</em>所关联的<em>MappedStatement</em>对象的id<br>(每个xml文件的<em>insert/delete/update/select</em>标签即对应一个<em>MappedStatement</em>对象)</p>
+<p>关联方式是，command对象的name属性关联MappedStatement的Id，首先将className和methodName拼接成statementId，然后查找statementId对应的对象，如果不存在，并且接口方法和被拦截的方法的所属类是同一个，说明该接口不继承其他接口，并且没有对应的mapper实现，返回null。否则，取出所有的继承的接口，查找对应的statement。<br><img src="/2018/12/25/mybatis源码浅析/resolveStatement.png" alt="resloveStatement"></p>
+<h3 id="MapperProxy"><a href="#MapperProxy" class="headerlink" title="MapperProxy"></a><strong>MapperProxy</strong></h3><p>实现了<em>InvocationHandler</em>接口，即MapperInterface的实现拦截器，</p>
 
           
         
@@ -390,116 +384,6 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] chars = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">1024</span>];</span><br><span class="line">r.read(chars);</span><br><span class="line">String request = String.valueOf(chars).trim();</span><br></pre></td></tr></table></figure>
 <p>也可以用CharBuffer，</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CharBuffer allocate = CharBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">r.read(allocate);</span><br><span class="line">System.out.println(allocate.flip().toString());</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/04/21/JDBC连接数据库/" itemprop="url">
-                  JDBC连接数据库
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-04-21T01:52:18+08:00" content="2018-04-21">
-              2018-04-21
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>许久没用原生JDBC连接过数据库，偶尔用到居然全都忘了，于是决心记录下来。<br>环境：开发工具idea，数据库MariaDB，驱动mysql。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</span><br></pre></td></tr></table></figure>
-<p>//加载MySQL驱动</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection conn=DriverManager.getConnection(url,username,password)</span><br></pre></td></tr></table></figure>
-<p>//获取连接</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PreparedStatement statement=conn.prepareStatement(<span class="string">"SELECT * FROM user WHERE uid=?"</span>);</span><br></pre></td></tr></table></figure>
-<p>//加入需要执行的语句，’ ? ‘ 是占位符,即所需要的参数</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">statement.setInt(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
-<p>//在第一个占位符处插入int型的参数2</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ResultSet set=statement.executeQuery();</span><br></pre></td></tr></table></figure>
-<p>//执行查询，并将返回结果集ResultSet</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(set.next())&#123;</span><br><span class="line"></span><br><span class="line">    String username=set.getString(<span class="string">"username"</span>);</span><br><span class="line">    </span><br><span class="line">    System.out.print(username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>//set.next(),表示将结果指针移动到下一行，若不为空，则返回true。</p>
-<p>//set.getString(“username”)表示获取当前行字段为username的String类型的数据，同样的还有getInt(),getBoolean等方法</p>
-<p>！注意：set的结果指针是指向第一行结果之前的的位置，在调用next()方法后移动到第一行。</p>
-<p>示例如下:</p>
-<p><img src="/2018/04/21/JDBC连接数据库/example.jpg" alt=""></p>
-
           
         
       
@@ -1070,7 +954,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-count">7</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1110,7 +994,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

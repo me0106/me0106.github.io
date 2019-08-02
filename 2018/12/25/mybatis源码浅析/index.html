@@ -84,17 +84,21 @@
 
 
 
-<meta name="description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
+<meta name="description" content="常用mybatis的Mapper接口形式，但是没怎么查看具体实现，抽空看了一下， 实现Mapper接口的动态实现在 org.apache.ibatis.binding 包，该包下面有BindingException,MapperMethod,MapperProxy,MapperProxyFactory,MapperRegistry几个类。 BindingException异常类，在进行Mapper">
 <meta property="og:type" content="article">
-<meta property="og:title" content="spring自定义注解默认bean的id">
-<meta property="og:url" content="http://yoursite.com/2018/10/27/Spring自定义注解生成的默认bean-id名/index.html">
+<meta property="og:title" content="mybatis源码浅析">
+<meta property="og:url" content="http://yoursite.com/2018/12/25/mybatis源码浅析/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
+<meta property="og:description" content="常用mybatis的Mapper接口形式，但是没怎么查看具体实现，抽空看了一下， 实现Mapper接口的动态实现在 org.apache.ibatis.binding 包，该包下面有BindingException,MapperMethod,MapperProxy,MapperProxyFactory,MapperRegistry几个类。 BindingException异常类，在进行Mapper">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-04-20T17:52:16.392Z">
+<meta property="og:image" content="http://yoursite.com/2018/12/25/mybatis源码浅析/binding.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/25/mybatis源码浅析/sqlCommand.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/25/mybatis源码浅析/resolveStatement.png">
+<meta property="og:updated_time" content="2018-12-26T00:43:33.935Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="spring自定义注解默认bean的id">
-<meta name="twitter:description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
+<meta name="twitter:title" content="mybatis源码浅析">
+<meta name="twitter:description" content="常用mybatis的Mapper接口形式，但是没怎么查看具体实现，抽空看了一下， 实现Mapper接口的动态实现在 org.apache.ibatis.binding 包，该包下面有BindingException,MapperMethod,MapperProxy,MapperProxyFactory,MapperRegistry几个类。 BindingException异常类，在进行Mapper">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/25/mybatis源码浅析/binding.png">
 
 
 
@@ -112,7 +116,7 @@
   };
 </script>
 
-  <title> spring自定义注解默认bean的id | 南楼 </title>
+  <title> mybatis源码浅析 | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -232,7 +236,7 @@
             
             
               
-                spring自定义注解默认bean的id
+                mybatis源码浅析
               
             
           </h1>
@@ -244,8 +248,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-10-27T16:55:52+08:00" content="2018-10-27">
-              2018-10-27
+            <time itemprop="dateCreated" datetime="2018-12-25T08:24:07+08:00" content="2018-12-25">
+              2018-12-25
             </time>
           </span>
 
@@ -272,11 +276,14 @@
       
 
       
-        <p>晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。<br>经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。</p>
-<p>spring生成默认bean的id时会取类名首字母小写，具体代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    类路径org.springframework.context.annotation.AnnotationBeanNameGenerator</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">	String beanClassName = definition.getBeanClassName();</span><br><span class="line">	Assert.state(beanClassName != <span class="keyword">null</span>, <span class="string">"No bean class name set"</span>);</span><br><span class="line">	String shortClassName = ClassUtils.getShortName(beanClassName);</span><br><span class="line">	<span class="keyword">return</span> Introspector.decapitalize(shortClassName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>只要重写该方法为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> definition.getBeanClassName();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>并且在spring配置文件中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:component-scan base-package=&quot;me.nanlou&quot; name-generator=&quot;xxxxxx&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
-<p>指定我们重写的BeanNameGenerator类即可。</p>
+        <p>常用mybatis的Mapper接口形式，但是没怎么查看具体实现，抽空看了一下，</p>
+<p>实现Mapper接口的动态实现在 <em>org.apache.ibatis.binding</em> 包，该包下面有<em>BindingException,MapperMethod,MapperProxy,MapperProxyFactory,MapperRegistry</em>几个类。<br><img src="/2018/12/25/mybatis源码浅析/binding.png" alt="bind"></p>
+<h3 id="BindingException"><a href="#BindingException" class="headerlink" title="BindingException"></a><strong>BindingException</strong></h3><p>异常类，在进行MapperBind过程中发生的异常</p>
+<h3 id="MapperMethod"><a href="#MapperMethod" class="headerlink" title="MapperMethod"></a><strong>MapperMethod</strong></h3><p>每个<em>MapperMethod</em>代表一个接口方法，并且和<em>xml标签的sql语句标签</em>进行关联</p>
+<p><em>MapperMethod</em>有一个静态内部类<em>SqlCommand</em>，以及一个该类的对象，<em>command</em></p>
+<p><img src="/2018/12/25/mybatis源码浅析/sqlCommand.png" alt="command"><br><em>command</em>对象指明了<em>MapperMethod</em>所关联的<em>MappedStatement</em>对象的id<br>(每个xml文件的<em>insert/delete/update/select</em>标签即对应一个<em>MappedStatement</em>对象)</p>
+<p>关联方式是，command对象的name属性关联MappedStatement的Id，首先将className和methodName拼接成statementId，然后查找statementId对应的对象，如果不存在，并且接口方法和被拦截的方法的所属类是同一个，说明该接口不继承其他接口，并且没有对应的mapper实现，返回null。否则，取出所有的继承的接口，查找对应的statement。<br><img src="/2018/12/25/mybatis源码浅析/resolveStatement.png" alt="resloveStatement"></p>
+<h3 id="MapperProxy"><a href="#MapperProxy" class="headerlink" title="MapperProxy"></a><strong>MapperProxy</strong></h3><p>实现了<em>InvocationHandler</em>接口，即MapperInterface的实现拦截器，</p>
 
       
     </div>
@@ -301,17 +308,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/27/JDBC连接数据库/" rel="next" title="JDBC连接数据库">
-                <i class="fa fa-chevron-left"></i> JDBC连接数据库
+              <a href="/2018/12/24/BufferedReader的lines问题/" rel="next" title="BufferedReader的lines">
+                <i class="fa fa-chevron-left"></i> BufferedReader的lines
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/27/SSH免密登陆/" rel="prev" title="SSH免密登陆">
-                SSH免密登陆 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -379,7 +382,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-count">7</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -411,7 +414,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BindingException"><span class="nav-number">1.</span> <span class="nav-text">BindingException</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapperMethod"><span class="nav-number">2.</span> <span class="nav-text">MapperMethod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapperProxy"><span class="nav-number">3.</span> <span class="nav-text">MapperProxy</span></a></li></ol></div>
             
           </div>
         </section>
@@ -430,7 +433,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
