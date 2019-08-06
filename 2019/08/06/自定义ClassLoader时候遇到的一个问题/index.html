@@ -84,13 +84,20 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="南楼">
-<meta property="og:url" content="http://yoursite.com/archives/2018/02/index.html">
+<meta name="description" content="在写自定义ClassLoader时候，发现报了个错,说是不能加载java.lang开头的类， 但是代码好像也没加载java.lang包的类啊  查了一会儿，发现原来是java在用自定义ClassLoader加载类的时候，会重新用ClassLoader加载类的所有父类，所以就导致了重新加载java.lang.Object。 加个判断，完事 1234567public Class&amp;lt;?&amp;gt; l">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义ClassLoader时候遇到的一个问题">
+<meta property="og:url" content="http://yoursite.com/2019/08/06/自定义ClassLoader时候遇到的一个问题/index.html">
 <meta property="og:site_name" content="南楼">
+<meta property="og:description" content="在写自定义ClassLoader时候，发现报了个错,说是不能加载java.lang开头的类， 但是代码好像也没加载java.lang包的类啊  查了一会儿，发现原来是java在用自定义ClassLoader加载类的时候，会重新用ClassLoader加载类的所有父类，所以就导致了重新加载java.lang.Object。 加个判断，完事 1234567public Class&amp;lt;?&amp;gt; l">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/08/06/自定义ClassLoader时候遇到的一个问题/exception.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/06/自定义ClassLoader时候遇到的一个问题/code.png">
+<meta property="og:updated_time" content="2019-08-06T06:47:36.490Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="南楼">
+<meta name="twitter:title" content="自定义ClassLoader时候遇到的一个问题">
+<meta name="twitter:description" content="在写自定义ClassLoader时候，发现报了个错,说是不能加载java.lang开头的类， 但是代码好像也没加载java.lang包的类啊  查了一会儿，发现原来是java在用自定义ClassLoader加载类的时候，会重新用ClassLoader加载类的所有父类，所以就导致了重新加载java.lang.Object。 加个判断，完事 1234567public Class&amp;lt;?&amp;gt; l">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/06/自定义ClassLoader时候遇到的一个问题/exception.png">
 
 
 
@@ -108,7 +115,7 @@
   };
 </script>
 
-  <title> 归档 | 南楼 </title>
+  <title> 自定义ClassLoader时候遇到的一个问题 | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -129,7 +136,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  page-archive  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -207,66 +214,119 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
-
-    <span class="archive-page-counter">
-      
-      
-      
-        
-      
-      嗯..! 目前共计 8 篇日志。 继续努力。
-    </span>
-
+  <div id="posts" class="posts-expand">
     
 
-      
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                自定义ClassLoader时候遇到的一个问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2019-08-06T14:27:59+08:00" content="2019-08-06">
+              2019-08-06
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
       
       
 
       
+        <p>在写自定义ClassLoader时候，发现报了个错,说是不能加载java.lang开头的类， 但是代码好像也没加载java.lang包的类啊</p>
+<p><img src="/2019/08/06/自定义ClassLoader时候遇到的一个问题/exception.png" alt="resloveStatement"><br><img src="/2019/08/06/自定义ClassLoader时候遇到的一个问题/code.png" alt="resloveStatement"></p>
+<p>查了一会儿，发现原来是java在用自定义ClassLoader加载类的时候，会重新用ClassLoader加载类的所有父类，所以就导致了重新加载java.lang.Object。</p>
+<p>加个判断，完事</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Class&lt;?&gt; loadClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">    System.out.println(name);</span><br><span class="line">    <span class="keyword">if</span> (name.startsWith(<span class="string">"java"</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.loadClass(name);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
         
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2018">2018</h2>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/25/mybatis源码浅析/" rel="next" title="mybatis源码浅析">
+                <i class="fa fa-chevron-left"></i> mybatis源码浅析
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
         </div>
       
-      
 
       
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2018/02/17/SSH免密登陆/" itemprop="url">
-              
-                <span itemprop="name">SSH免密登陆</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-02-17T21:07:40+08:00"
-              content="2018-02-17" >
-          02-17
-        </time>
-      </div>
-
-    </header>
+      
+    </footer>
   </article>
 
 
 
-    
-
-  </section>
-
-  
-
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -274,6 +334,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -293,8 +357,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -330,6 +403,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -433,11 +517,9 @@
 
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
 
 
   
