@@ -1,0 +1,563 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="前几天想试一下一个IDEA插件，发现是用ZKM混淆过的。于是顺带学了一波技术。 思路：字符串还原ZKM的逆向会混淆所有的字符串，然后将原本的”…..”字符串替换为a(int,int)类型的一个加密函数， 也就是 1234567891011String s=&quot;abc&quot;;//会混淆成String s=a(int,int);//加密函数private static final String a(int">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java逆向记录（一），原生AspectJ使用">
+<meta property="og:url" content="http://yoursite.com/2019/08/23/Java逆向记录（一），原生AspectJ使用/index.html">
+<meta property="og:site_name" content="南楼">
+<meta property="og:description" content="前几天想试一下一个IDEA插件，发现是用ZKM混淆过的。于是顺带学了一波技术。 思路：字符串还原ZKM的逆向会混淆所有的字符串，然后将原本的”…..”字符串替换为a(int,int)类型的一个加密函数， 也就是 1234567891011String s=&quot;abc&quot;;//会混淆成String s=a(int,int);//加密函数private static final String a(int">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-08-23T04:05:24.380Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java逆向记录（一），原生AspectJ使用">
+<meta name="twitter:description" content="前几天想试一下一个IDEA插件，发现是用ZKM混淆过的。于是顺带学了一波技术。 思路：字符串还原ZKM的逆向会混淆所有的字符串，然后将原本的”…..”字符串替换为a(int,int)类型的一个加密函数， 也就是 1234567891011String s=&quot;abc&quot;;//会混淆成String s=a(int,int);//加密函数private static final String a(int">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Java逆向记录（一），原生AspectJ使用 | 南楼 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">南楼</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Java逆向记录（一），原生AspectJ使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2019-08-23T12:04:12+08:00" content="2019-08-23">
+              2019-08-23
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前几天想试一下一个IDEA插件，发现是用ZKM混淆过的。于是顺带学了一波技术。</p>
+<h4 id="思路：字符串还原"><a href="#思路：字符串还原" class="headerlink" title="思路：字符串还原"></a>思路：字符串还原</h4><p>ZKM的逆向会混淆所有的字符串，然后将原本的”…..”字符串替换为a(int,int)类型的一个加密函数，</p>
+<p>也就是</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String s=<span class="string">"abc"</span>;</span><br><span class="line"><span class="comment">//会混淆成</span></span><br><span class="line"></span><br><span class="line">String s=a(<span class="keyword">int</span>,<span class="keyword">int</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//加密函数</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String <span class="title">a</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">    <span class="comment">//do decrypt..</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"..."</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="切面生成"><a href="#切面生成" class="headerlink" title="切面生成"></a>切面生成</h4><p>所以先用Aspectj进行方法拦截，这地方涉及到了原生的Aspectj使用，网上资料比较少，大部分都是springAOP里面的</p>
+<p>先是下载Aspectj必要的三个包</p>
+<ul>
+<li><strong>aspectjtools-1.9.4.jar</strong>         编译工具，用来编译切面到具体的class或者jar，</li>
+<li><strong>aspectjweaver-1.9.4.jar </strong>   注解支持，运行时代理， 编译时支持  <em>@PointCut</em>  等。</li>
+<li><strong>aspectjrt-1.9.4.jar</strong>               运行时支持，</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspectj</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MybatisAspect</span> </span>&#123;</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 写入文件</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> BufferedWriter writer;</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * set的作用算是字符串去重，多次相同调用会产生相同字符串，</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Set&lt;String&gt; set;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="comment">//初始化writer,set</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 切点,</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"xxxx.xxxx..a(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">cut</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 文件写入</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String s)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 环绕通知，进行调用拦截 ，</span></span><br><span class="line"><span class="comment">     * 简化版，原版利用了Thread.currentThread.getStackTrace()</span></span><br><span class="line"><span class="comment">     * 用来对方法调用者的显示即: (方法调用者)-&gt;(目标方法(参数)) --&gt;返回值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Around</span>(<span class="string">"cut()"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">around</span><span class="params">(ProceedingJoinPoint pjp)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> String methodName = pjp.getSignature().getName();</span><br><span class="line">        Object[] args = pjp.getArgs();</span><br><span class="line">        <span class="keyword">final</span> Object proceed = pjp.proceed();</span><br><span class="line">		Object s =proceed;</span><br><span class="line">		<span class="keyword">if</span>(proceed <span class="keyword">instanceof</span> <span class="keyword">byte</span>[])&#123;</span><br><span class="line">			s = <span class="keyword">new</span> String((<span class="keyword">byte</span>[])proceed);</span><br><span class="line">		&#125;</span><br><span class="line">        <span class="keyword">final</span> String className = pjp.getSignature().getDeclaringType().getName();</span><br><span class="line">        <span class="keyword">final</span> String template = <span class="string">"%s.%s(%s) : --&gt;[ %s ]"</span>;<span class="comment">//当前方法类名.当前方法名,</span></span><br><span class="line">        <span class="keyword">final</span> String format = String.format(template, className,methodName, Arrays.toString(args), s);</span><br><span class="line">        write(format);</span><br><span class="line">        <span class="keyword">return</span> proceed;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>写完之后将上述三个文件放置至同一包下</p>
+<p>然后执行命令，目录下生成 将生成 <strong>out.jar</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java  -cp aspectjweaver-1.9.4.jar;aspectjtools-1.9.4.jar org.aspectj.tools.ajc.Main  MybatisAspect.java -outjar out.jar -source 1.8  -target 1.8  -outxml</span><br></pre></td></tr></table></figure>
+<h4 id="进行代理"><a href="#进行代理" class="headerlink" title="进行代理"></a>进行代理</h4><p>将<strong>aspectjrt-1.9.4.jar</strong> , <strong>out.jar</strong> 复制到 <em>${IDEA安装目录}/lib</em> 下面，然后在idea64.vmoptions中加上aspectjweaver-1.9.4.jar 路径的代理路径</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-javaagent:C:\Users\me\Desktop\aj\aspectjweaver-1.9.4.jar</span><br></pre></td></tr></table></figure>
+<p>最后查看输出的字符串。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/07/ReentrantLock源码笔记/" rel="next" title="ReentrantLock源码笔记">
+                <i class="fa fa-chevron-left"></i> ReentrantLock源码笔记
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/23/Java逆向记录（二），Javassist的使用/" rel="prev" title="Java逆向记录（二），Javassist的使用">
+                Java逆向记录（二），Javassist的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="南楼清月" />
+          <p class="site-author-name" itemprop="name">南楼清月</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#思路：字符串还原"><span class="nav-number">1.</span> <span class="nav-text">思路：字符串还原</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#切面生成"><span class="nav-number">2.</span> <span class="nav-text">切面生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进行代理"><span class="nav-number">3.</span> <span class="nav-text">进行代理</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">南楼清月</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

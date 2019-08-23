@@ -84,16 +84,17 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="南楼">
-<meta property="og:url" content="http://yoursite.com/about/index.html">
+<meta name="description" content="毕竟是第一次进行逆向，过程中有许多乱七八糟的，也走了很多弯路，不过说到底还是学习了一些东西的； 比如逆向的时候要搞清楚函数的返回值啊，调用链啊，这地方可能就需要AspectJ了，然后获取到返回值之后，还要对代码进行具体的分析，方法返回什么值？，这地方可能就要顺着作者的思路了。 还有就是修改字节码的时候，有些能比较清晰地看到类方法的基本上可以用javasisst直接插入方法体就行了，但是如果没办法反">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java逆向总结">
+<meta property="og:url" content="http://yoursite.com/2019/08/23/java逆向总结/index.html">
 <meta property="og:site_name" content="南楼">
+<meta property="og:description" content="毕竟是第一次进行逆向，过程中有许多乱七八糟的，也走了很多弯路，不过说到底还是学习了一些东西的； 比如逆向的时候要搞清楚函数的返回值啊，调用链啊，这地方可能就需要AspectJ了，然后获取到返回值之后，还要对代码进行具体的分析，方法返回什么值？，这地方可能就要顺着作者的思路了。 还有就是修改字节码的时候，有些能比较清晰地看到类方法的基本上可以用javasisst直接插入方法体就行了，但是如果没办法反">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/about/index/tea.jpg">
-<meta property="og:updated_time" content="2017-11-27T04:19:48.888Z">
+<meta property="og:updated_time" content="2019-08-23T04:26:50.487Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="南楼">
-<meta name="twitter:image" content="http://yoursite.com/about/index/tea.jpg">
+<meta name="twitter:title" content="java逆向总结">
+<meta name="twitter:description" content="毕竟是第一次进行逆向，过程中有许多乱七八糟的，也走了很多弯路，不过说到底还是学习了一些东西的； 比如逆向的时候要搞清楚函数的返回值啊，调用链啊，这地方可能就需要AspectJ了，然后获取到返回值之后，还要对代码进行具体的分析，方法返回什么值？，这地方可能就要顺着作者的思路了。 还有就是修改字节码的时候，有些能比较清晰地看到类方法的基本上可以用javasisst直接插入方法体就行了，但是如果没办法反">
 
 
 
@@ -111,13 +112,7 @@
   };
 </script>
 
-  <title>
-  
-
-  
-     | 南楼
-  
-</title>
+  <title> java逆向总结 | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -138,7 +133,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -218,10 +213,121 @@
 
   <div id="posts" class="posts-expand">
     
-    
-      <p><img src="/about/index/tea.jpg" alt=""></p>
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                java逆向总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2019-08-23T12:26:14+08:00" content="2019-08-23">
+              2019-08-23
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>毕竟是第一次进行逆向，过程中有许多乱七八糟的，也走了很多弯路，不过说到底还是学习了一些东西的；</p>
+<p>比如逆向的时候要搞清楚函数的返回值啊，调用链啊，这地方可能就需要AspectJ了，然后获取到返回值之后，还要对代码进行具体的分析，方法返回什么值？，这地方可能就要顺着作者的思路了。</p>
+<p>还有就是修改字节码的时候，有些能比较清晰地看到类方法的基本上可以用javasisst直接插入方法体就行了，但是如果没办法反编译的话只能用ASM把字节码修改了；也可以javassist组合起来用，比如用javassist给类加个打印异常日志的方法write，然后利用ASM在捕获到异常的时候把异常用write(Exception)打印到文件里，这样就可以更好分析插件了。</p>
+<p>ZKM混淆之后的字节码基本上都是a,b,c,d啥的，所有的字符串也变成了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//加密方法</span><br><span class="line">a(int,int);</span><br><span class="line">//或者字符串数组</span><br><span class="line">static final String[] a;</span><br></pre></td></tr></table></figure>
+<p>看得脑仁疼；</p>
+<p>反编译也用了cfr,jad，jbytemod之类的工具；</p>
+<p>但对于没办法反编译到java代码的只能硬生生地看字节码了；</p>
+<p>刚好也更熟悉了字节码的一些指令，之前就只大概知道字节码怎么看，像异常表之类的就不熟很熟悉，还有本地变量表也是；</p>
+<p>总的来说还是对自己有些提高的把，虽然也花了一些时间。但至少明白了字节码，切面代理之类的东西。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/23/Java逆向记录（三），ASM的使用/" rel="next" title="Java逆向记录（三），ASM的使用">
+                <i class="fa fa-chevron-left"></i> Java逆向记录（三），ASM的使用
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -253,8 +359,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -290,6 +405,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -393,6 +519,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
