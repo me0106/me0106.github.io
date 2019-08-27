@@ -84,17 +84,17 @@
 
 
 
-<meta name="description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
+<meta name="description" content="对于i++源码： 12345public int plus()&amp;#123;	int i=0;    i=i++;    return i;&amp;#125; 字节码： 123456789public int test();  Code:     0: iconst_1   				//int类型 1  放入栈顶     1: istore_1   				//栈顶int类型数值放入局部变量表第二个位置">
 <meta property="og:type" content="article">
-<meta property="og:title" content="spring自定义注解默认bean的id">
-<meta property="og:url" content="http://yoursite.com/2018/04/21/Spring自定义注解生成的默认bean-id名/index.html">
+<meta property="og:title" content="从字节码看i=i++和i=++i;">
+<meta property="og:url" content="http://yoursite.com/2019/08/27/从字节码看i=i++和i=++i/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
+<meta property="og:description" content="对于i++源码： 12345public int plus()&amp;#123;	int i=0;    i=i++;    return i;&amp;#125; 字节码： 123456789public int test();  Code:     0: iconst_1   				//int类型 1  放入栈顶     1: istore_1   				//栈顶int类型数值放入局部变量表第二个位置">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-24T01:11:13.401Z">
+<meta property="og:updated_time" content="2019-08-27T01:33:09.539Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="spring自定义注解默认bean的id">
-<meta name="twitter:description" content="晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。 spring生成默认bean的id时会取类名首字母小写，具体代码如下1234567891011/*    类路径or">
+<meta name="twitter:title" content="从字节码看i=i++和i=++i;">
+<meta name="twitter:description" content="对于i++源码： 12345public int plus()&amp;#123;	int i=0;    i=i++;    return i;&amp;#125; 字节码： 123456789public int test();  Code:     0: iconst_1   				//int类型 1  放入栈顶     1: istore_1   				//栈顶int类型数值放入局部变量表第二个位置">
 
 
 
@@ -112,7 +112,7 @@
   };
 </script>
 
-  <title> spring自定义注解默认bean的id | 南楼 </title>
+  <title> 从字节码看i=i++和i=++i; | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -232,7 +232,7 @@
             
             
               
-                spring自定义注解默认bean的id
+                从字节码看i=i++和i=++i;
               
             
           </h1>
@@ -244,8 +244,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-04-21T01:52:16+08:00" content="2018-04-21">
-              2018-04-21
+            <time itemprop="dateCreated" datetime="2019-08-27T09:32:07+08:00" content="2019-08-27">
+              2019-08-27
             </time>
           </span>
 
@@ -272,11 +272,21 @@
       
 
       
-        <p>晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。<br>经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。</p>
-<p>spring生成默认bean的id时会取类名首字母小写，具体代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    类路径org.springframework.context.annotation.AnnotationBeanNameGenerator</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">	String beanClassName = definition.getBeanClassName();</span><br><span class="line">	Assert.state(beanClassName != <span class="keyword">null</span>, <span class="string">"No bean class name set"</span>);</span><br><span class="line">	String shortClassName = ClassUtils.getShortName(beanClassName);</span><br><span class="line">	<span class="keyword">return</span> Introspector.decapitalize(shortClassName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>只要重写该方法为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> definition.getBeanClassName();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>并且在spring配置文件中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:component-scan base-package=&quot;me.nanlou&quot; name-generator=&quot;xxxxxx&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
-<p>指定我们重写的BeanNameGenerator类即可。</p>
+        <h4 id="对于i"><a href="#对于i" class="headerlink" title="对于i++"></a>对于i++</h4><p>源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">plus</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    i=i++;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>字节码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int test();</span><br><span class="line">  Code:</span><br><span class="line">     0: iconst_1   				//int类型 1  放入栈顶</span><br><span class="line">     1: istore_1   				//栈顶int类型数值放入局部变量表第二个位置 </span><br><span class="line">     2: iload_1					//将局部变量表第二个位置数据放入栈顶</span><br><span class="line">     3: iinc          1, 1		//将局部变量表第二个位置的元素+1</span><br><span class="line">     6: istore_1					//将栈顶元素放入局部变量表第二个位置</span><br><span class="line">     7: iload_1					//将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     8: ireturn					//将栈顶元素返回</span><br></pre></td></tr></table></figure>
+<p>注：局部变量表的第一个位置留给this</p>
+<h4 id="对于-i"><a href="#对于-i" class="headerlink" title="对于++i"></a>对于++i</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">plus</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    i=++i;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int test();</span><br><span class="line">  Code:</span><br><span class="line">     0: iconst_1						//int类型 1  放入栈顶</span><br><span class="line">     1: istore_1						//栈顶int类型数值放入局部变量表第二个位置 </span><br><span class="line">     2: iinc          1, 1			//将局部变量表第二个位置的元素+1</span><br><span class="line">     5: iload_1						//将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     6: istore_1						//将栈顶元素放入局部变量表第二个位置</span><br><span class="line">     7: iload_1						//将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     8: ireturn						//将栈顶元素返回</span><br></pre></td></tr></table></figure>
+<h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><p><strong>i++:</strong> 在字节码2,3,6,7的执行过程里，存在两个i值的情况，</p>
+<p>​    本地变量表存在一个 i，栈顶存在一个 i，    <strong>这是在iinc 之前发生的事</strong></p>
+<p>​    然后iinc，将变量表的i增加了1，    </p>
+<p>​    紧接着，又将栈顶的i 写入变量表的i的位置，导致修改之后的i被覆盖。</p>
+<p><strong>++i:</strong>  也存在两个i的情况，但是入栈的顺序不同，即：</p>
+<p>​    ++i的第二个i是在<strong>执行iinc之后再放入栈顶</strong>，</p>
+<p>​    此时本地变量表存在一个 i，栈顶存在一个 i，<strong>不过这是在iinc之后发生的事</strong></p>
+<p>​    结果是栈顶和变量表的i都是1，再写回变量表的时候    并没有发生变化</p>
 
       
     </div>
@@ -301,17 +311,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/17/SSH免密登陆/" rel="next" title="SSH免密登陆">
-                <i class="fa fa-chevron-left"></i> SSH免密登陆
+              <a href="/2019/08/23/java逆向总结/" rel="next" title="java逆向总结">
+                <i class="fa fa-chevron-left"></i> java逆向总结
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/12/24/BufferedReader的lines问题/" rel="prev" title="BufferedReader的lines">
-                BufferedReader的lines <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -411,7 +417,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#对于i"><span class="nav-number">1.</span> <span class="nav-text">对于i++</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对于-i"><span class="nav-number">2.</span> <span class="nav-text">对于++i</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解释"><span class="nav-number">3.</span> <span class="nav-text">解释</span></a></li></ol></div>
             
           </div>
         </section>
