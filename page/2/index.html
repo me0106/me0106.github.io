@@ -231,6 +231,104 @@
             
               
                 
+                <a class="post-title-link" href="/2018/04/21/Spring自定义注解生成的默认bean-id名/" itemprop="url">
+                  spring自定义注解默认bean的id
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-04-21T01:52:16+08:00" content="2018-04-21">
+              2018-04-21
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。<br>经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。</p>
+<p>spring生成默认bean的id时会取类名首字母小写，具体代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    类路径org.springframework.context.annotation.AnnotationBeanNameGenerator</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">	String beanClassName = definition.getBeanClassName();</span><br><span class="line">	Assert.state(beanClassName != <span class="keyword">null</span>, <span class="string">"No bean class name set"</span>);</span><br><span class="line">	String shortClassName = ClassUtils.getShortName(beanClassName);</span><br><span class="line">	<span class="keyword">return</span> Introspector.decapitalize(shortClassName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>只要重写该方法为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> definition.getBeanClassName();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>并且在spring配置文件中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:component-scan base-package=&quot;me.nanlou&quot; name-generator=&quot;xxxxxx&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>指定我们重写的BeanNameGenerator类即可。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2018/02/17/SSH免密登陆/" itemprop="url">
                   SSH免密登陆
                 </a>
@@ -659,7 +757,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

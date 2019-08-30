@@ -231,6 +231,160 @@
             
               
                 
+                <a class="post-title-link" href="/2019/08/30/基本类型的++操作原理/" itemprop="url">
+                  基本类型的++操作原理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2019-08-30T10:54:31+08:00" content="2019-08-30">
+              2019-08-30
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>对于所有基本类型的++操作源代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">byte</span> a = <span class="number">1</span>;</span><br><span class="line">    a++;</span><br><span class="line">    <span class="keyword">char</span> b = <span class="number">1</span>;</span><br><span class="line">    b++;</span><br><span class="line">    <span class="keyword">short</span> c = <span class="number">1</span>;</span><br><span class="line">    c++;</span><br><span class="line">    <span class="keyword">int</span> d = <span class="number">1</span>;</span><br><span class="line">    d++;</span><br><span class="line">    <span class="keyword">long</span> e = <span class="number">1</span>;</span><br><span class="line">    e++;</span><br><span class="line">    <span class="keyword">float</span> f = <span class="number">1</span>;</span><br><span class="line">    f++;</span><br><span class="line">    <span class="keyword">double</span> g = <span class="number">1</span>;</span><br><span class="line">    g++;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的字节码为:</p>
+<table>
+<thead>
+<tr>
+<th>byte/a++</th>
+<th>char/b++</th>
+<th>short/c++</th>
+<th>int/d++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0: iconst_1<br>       1: istore_0<br>       2: iload_0<br>       3: iconst_1<br>       4: iadd<br>       5: i2b<br>       6: istore_0</td>
+<td>7: iconst_1<br>       8: istore_1<br>       9: iload_1<br>      10: iconst_1<br>      11: iadd<br>      12: i2c<br>      13: istore_1</td>
+<td>14: iconst_1<br>      15: istore_2<br>      16: iload_2<br>      17: iconst_1<br>      18: iadd<br>      19: i2s<br>      20: istore_2</td>
+<td>21: iconst_1<br>      22: istore_3<br>      23: iinc          3, 1</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">long/e++</th>
+<th style="text-align:left">float/f++</th>
+<th style="text-align:left">double/g++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">26: lconst_1<br>      27: lstore        4<br>      29: lload         4<br>      31: lconst_1<br>      32: ladd<br>      33: lstore        4</td>
+<td style="text-align:left">35: fconst_1<br>      36: fstore        6<br>      38: fload         6<br>      40: fconst_1<br>      41: fadd<br>      42: fstore        6</td>
+<td style="text-align:left">44: dconst_1<br>      45: dstore        7<br>      47: dload         7<br>      49: dconst_1<br>      50: dadd<br>      51: dstore        7</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到</p>
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>虚拟机操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte,char,short</td>
+<td>iadd 指令，int操作，利用i2b,i2c,i2s强转类型</td>
+</tr>
+<tr>
+<td>int</td>
+<td>iinc指令，int独有</td>
+</tr>
+<tr>
+<td>long,float,double</td>
+<td>对应ladd,fadd,dadd 指令，每种数据类型独有</td>
+</tr>
+</tbody>
+</table>
+<p>所以，<strong>当byte,char,short进行加减运算时，本质上还是int运算，故需要强制类型转换。</strong></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2019/08/27/从字节码看i=i++和i=++i/" itemprop="url">
                   从字节码看i=i++和i=++i;
                 </a>
@@ -276,20 +430,20 @@
         
           
             <h4 id="对于i"><a href="#对于i" class="headerlink" title="对于i++"></a>对于i++</h4><p>源码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">plus</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    i=i++;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">plus</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    i=i++;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>字节码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int test();</span><br><span class="line">  Code:</span><br><span class="line">     0: iconst_1   				//int类型 1  放入栈顶</span><br><span class="line">     1: istore_1   				//栈顶int类型数值放入局部变量表第二个位置 </span><br><span class="line">     2: iload_1					//将局部变量表第二个位置数据放入栈顶</span><br><span class="line">     3: iinc          1, 1		//将局部变量表第二个位置的元素+1</span><br><span class="line">     6: istore_1					//将栈顶元素放入局部变量表第二个位置</span><br><span class="line">     7: iload_1					//将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     8: ireturn					//将栈顶元素返回</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int test();</span><br><span class="line">  Code:</span><br><span class="line">     0: iconst_1                  //int类型 1  放入栈顶</span><br><span class="line">     1: istore_1                  //栈顶int类型数值放入局部变量表第二个位置 </span><br><span class="line">     2: iload_1                   //将局部变量表第二个位置数据放入栈顶</span><br><span class="line">     3: iinc          1, 1        //将局部变量表第二个位置的元素+1</span><br><span class="line">     6: istore_1                  //将栈顶元素放入局部变量表第二个位置</span><br><span class="line">     7: iload_1                   //将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     8: ireturn                   //将栈顶元素返回</span><br></pre></td></tr></table></figure>
 <p>注：局部变量表的第一个位置留给this</p>
-<h4 id="对于-i"><a href="#对于-i" class="headerlink" title="对于++i"></a>对于++i</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">plus</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    i=++i;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int test();</span><br><span class="line">  Code:</span><br><span class="line">     0: iconst_1						//int类型 1  放入栈顶</span><br><span class="line">     1: istore_1						//栈顶int类型数值放入局部变量表第二个位置 </span><br><span class="line">     2: iinc          1, 1			//将局部变量表第二个位置的元素+1</span><br><span class="line">     5: iload_1						//将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     6: istore_1						//将栈顶元素放入局部变量表第二个位置</span><br><span class="line">     7: iload_1						//将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     8: ireturn						//将栈顶元素返回</span><br></pre></td></tr></table></figure>
+<h4 id="对于-i"><a href="#对于-i" class="headerlink" title="对于++i"></a>对于++i</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">plus</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    i=++i;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int test();</span><br><span class="line">  Code:</span><br><span class="line">     0: iconst_1            //int类型 1  放入栈顶</span><br><span class="line">     1: istore_1            //栈顶int类型数值放入局部变量表第二个位置 </span><br><span class="line">     2: iinc          1, 1  //将局部变量表第二个位置的元素+1</span><br><span class="line">     5: iload_1             //将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     6: istore_1            //将栈顶元素放入局部变量表第二个位置</span><br><span class="line">     7: iload_1             //将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     8: ireturn             //将栈顶元素返回</span><br></pre></td></tr></table></figure>
 <h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><p><strong>i++:</strong> 在字节码2,3,6,7的执行过程里，存在两个i值的情况，</p>
-<p>​    本地变量表存在一个 i，栈顶存在一个 i，    <strong>这是在iinc 之前发生的事</strong></p>
-<p>​    然后iinc，将变量表的i增加了1，    </p>
-<p>​    紧接着，又将栈顶的i 写入变量表的i的位置，导致修改之后的i被覆盖。</p>
+<p>​         本地变量表存在一个 i，栈顶存在一个 i，         <strong>这是在iinc 之前发生的事</strong></p>
+<p>​         然后iinc，将变量表的i增加了1，         </p>
+<p>​         紧接着，又将栈顶的i 写入变量表的i的位置，导致修改之后的i被覆盖。</p>
 <p><strong>++i:</strong>  也存在两个i的情况，但是入栈的顺序不同，即：</p>
-<p>​    ++i的第二个i是在<strong>执行iinc之后再放入栈顶</strong>，</p>
-<p>​    此时本地变量表存在一个 i，栈顶存在一个 i，<strong>不过这是在iinc之后发生的事</strong></p>
-<p>​    结果是栈顶和变量表的i都是1，再写回变量表的时候    并没有发生变化</p>
+<p>​         ++i的第二个i是在<strong>执行iinc之后再放入栈顶</strong>，</p>
+<p>​         此时本地变量表存在一个 i，栈顶存在一个 i，<strong>不过这是在iinc之后发生的事</strong></p>
+<p>​         结果是栈顶和变量表的i都是1，再写回变量表的时候         并没有发生变化</p>
 
           
         
@@ -1139,104 +1293,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/04/21/Spring自定义注解生成的默认bean-id名/" itemprop="url">
-                  spring自定义注解默认bean的id
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-04-21T01:52:16+08:00" content="2018-04-21">
-              2018-04-21
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>晚上弄项目的时候发现spring对于注解(@Controller,@Service，等)Bean的id会默认取类名而非类全名，网上所找到的都是在打注解时指定bean的id。这样未免过于繁琐。<br>经翻源码得知Spring可以自定义注解的默认bean-id生成方式，因为毕竟少见，特此记录。</p>
-<p>spring生成默认bean的id时会取类名首字母小写，具体代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    类路径org.springframework.context.annotation.AnnotationBeanNameGenerator</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">	String beanClassName = definition.getBeanClassName();</span><br><span class="line">	Assert.state(beanClassName != <span class="keyword">null</span>, <span class="string">"No bean class name set"</span>);</span><br><span class="line">	String shortClassName = ClassUtils.getShortName(beanClassName);</span><br><span class="line">	<span class="keyword">return</span> Introspector.decapitalize(shortClassName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>只要重写该方法为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">buildDefaultBeanName</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> definition.getBeanClassName();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>并且在spring配置文件中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;context:component-scan base-package=&quot;me.nanlou&quot; name-generator=&quot;xxxxxx&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
-<p>指定我们重写的BeanNameGenerator类即可。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1282,7 +1338,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

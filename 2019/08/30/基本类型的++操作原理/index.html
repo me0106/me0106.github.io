@@ -84,22 +84,17 @@
 
 
 
-<meta name="description" content="常用mybatis的Mapper接口形式，但是没怎么查看具体实现，抽空看了一下， Mapper接口的动态绑定实现在 org.apache.ibatis.binding 包，该包下面有BindingException,MapperMethod,MapperProxy,MapperProxyFactory,MapperRegistry几个类。 BindingException异常类，在进行Mapper">
+<meta name="description" content="对于所有基本类型的++操作源代码如下： 1234567891011121314151617public static int test()&amp;#123;    byte a = 1;    a++;    char b = 1;    b++;    short c = 1;    c++;    int d = 1;    d++;    long e = 1;    e++;    float">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mybatis源码浅析">
-<meta property="og:url" content="http://yoursite.com/2018/12/25/mybatis源码浅析/index.html">
+<meta property="og:title" content="基本类型的++操作原理">
+<meta property="og:url" content="http://yoursite.com/2019/08/30/基本类型的++操作原理/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="常用mybatis的Mapper接口形式，但是没怎么查看具体实现，抽空看了一下， Mapper接口的动态绑定实现在 org.apache.ibatis.binding 包，该包下面有BindingException,MapperMethod,MapperProxy,MapperProxyFactory,MapperRegistry几个类。 BindingException异常类，在进行Mapper">
+<meta property="og:description" content="对于所有基本类型的++操作源代码如下： 1234567891011121314151617public static int test()&amp;#123;    byte a = 1;    a++;    char b = 1;    b++;    short c = 1;    c++;    int d = 1;    d++;    long e = 1;    e++;    float">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/12/25/mybatis源码浅析/binding.png">
-<meta property="og:image" content="http://yoursite.com/2018/12/25/mybatis源码浅析/sqlCommand.png">
-<meta property="og:image" content="http://yoursite.com/2018/12/25/mybatis源码浅析/resolveStatement.png">
-<meta property="og:image" content="http://yoursite.com/2018/12/25/mybatis源码浅析/MapperProxy.png">
-<meta property="og:updated_time" content="2019-08-03T09:06:41.078Z">
+<meta property="og:updated_time" content="2019-08-30T03:34:56.465Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="mybatis源码浅析">
-<meta name="twitter:description" content="常用mybatis的Mapper接口形式，但是没怎么查看具体实现，抽空看了一下， Mapper接口的动态绑定实现在 org.apache.ibatis.binding 包，该包下面有BindingException,MapperMethod,MapperProxy,MapperProxyFactory,MapperRegistry几个类。 BindingException异常类，在进行Mapper">
-<meta name="twitter:image" content="http://yoursite.com/2018/12/25/mybatis源码浅析/binding.png">
+<meta name="twitter:title" content="基本类型的++操作原理">
+<meta name="twitter:description" content="对于所有基本类型的++操作源代码如下： 1234567891011121314151617public static int test()&amp;#123;    byte a = 1;    a++;    char b = 1;    b++;    short c = 1;    c++;    int d = 1;    d++;    long e = 1;    e++;    float">
 
 
 
@@ -117,7 +112,7 @@
   };
 </script>
 
-  <title> mybatis源码浅析 | 南楼 </title>
+  <title> 基本类型的++操作原理 | 南楼 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -237,7 +232,7 @@
             
             
               
-                mybatis源码浅析
+                基本类型的++操作原理
               
             
           </h1>
@@ -249,8 +244,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-12-25T08:24:07+08:00" content="2018-12-25">
-              2018-12-25
+            <time itemprop="dateCreated" datetime="2019-08-30T10:54:31+08:00" content="2019-08-30">
+              2019-08-30
             </time>
           </span>
 
@@ -277,22 +272,67 @@
       
 
       
-        <p>常用mybatis的Mapper接口形式，但是没怎么查看具体实现，抽空看了一下，</p>
-<p>Mapper接口的动态绑定实现在 <em>org.apache.ibatis.binding</em> 包，该包下面有<em>BindingException,MapperMethod,MapperProxy,MapperProxyFactory,MapperRegistry</em>几个类。<br><img src="/2018/12/25/mybatis源码浅析/binding.png" alt="bind"></p>
-<h3 id="BindingException"><a href="#BindingException" class="headerlink" title="BindingException"></a><strong>BindingException</strong></h3><p>异常类，在进行MapperBind过程中发生的异常</p>
-<h3 id="MapperMethod"><a href="#MapperMethod" class="headerlink" title="MapperMethod"></a><strong>MapperMethod</strong></h3><p>每个<em>MapperMethod</em>代表一个接口方法，并且和<em>xml标签的sql语句标签</em>进行关联</p>
-<p><em>MapperMethod</em>有一个静态内部类<em>SqlCommand</em>，以及一个该类的对象，<em>command</em></p>
-<p><img src="/2018/12/25/mybatis源码浅析/sqlCommand.png" alt="command"></p>
-<p><em>command</em>对象指明了<em>MapperMethod</em>所关联的<em>MappedStatement</em>对象的id</p>
-<p>(每个xml文件的<em>insert/delete/update/select</em>标签即对应一个<em>MappedStatement</em>对象)</p>
-<p>关联方式是，command对象的name属性关联MappedStatement的Id，首先将className和methodName拼接成statementId，然后查找statementId对应的对象，如果不存在，并且接口方法和被拦截的方法的所属类是同一个，说明该接口不继承其他接口，并且没有对应的mapper实现，返回null。否则，取出所有的继承的接口，查找对应的statement。<br><img src="/2018/12/25/mybatis源码浅析/resolveStatement.png" alt="resloveStatement"></p>
-<h3 id="MapperProxy"><a href="#MapperProxy" class="headerlink" title="MapperProxy"></a><strong>MapperProxy</strong></h3><p>实现了<em>InvocationHandler</em>接口，即接口方法的拦截器，<br><img src="/2018/12/25/mybatis源码浅析/MapperProxy.png" alt="resloveStatement"></p>
-<p>invoke方法的第一个if，判断是不是Object类的方法，是则调用当前MapperProxy对象的公共方法。</p>
-<p>invoke方法的第二个if,判断是不是接口的default方法(java8特性)</p>
-<p>最后则是调用cachedMapperMethod方法，从缓存获取真正的MapperMethod进行调用</p>
-<h3 id="MapperProxyFactory-MapperRegistry"><a href="#MapperProxyFactory-MapperRegistry" class="headerlink" title="MapperProxyFactory,MapperRegistry"></a><strong>MapperProxyFactory,MapperRegistry</strong></h3><p>MapperProxyFactory是生成接口实现对象的真正类，</p>
-<p>MapperRegistry则是保存 接口和接口对应的MapperProxyFactory的类。每次调用getMapper的时候，都会用MapperProxyFactory对象的newInstance生成一个新的Mapper对象</p>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a><strong>最后</strong></h3><p>Mybatis的接口和具体的Xml绑定的实现方式说到底还是<strong>jdk动态代理</strong>。我们所定义的DAO层的Mapper接口通过jdk的动态代理生成一个具体的对象；我们在用这个对象进行方法调用的时候，会通过InvocationHandler进行调用拦截，然后将DAO层接口的全限定名和方法名进行拼接，获取真正的存在于xml里面的SQL，所以xml的namespace写的是类的全限定名，而每个curd块的id是方法名。</p>
+        <p>对于所有基本类型的++操作源代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">byte</span> a = <span class="number">1</span>;</span><br><span class="line">    a++;</span><br><span class="line">    <span class="keyword">char</span> b = <span class="number">1</span>;</span><br><span class="line">    b++;</span><br><span class="line">    <span class="keyword">short</span> c = <span class="number">1</span>;</span><br><span class="line">    c++;</span><br><span class="line">    <span class="keyword">int</span> d = <span class="number">1</span>;</span><br><span class="line">    d++;</span><br><span class="line">    <span class="keyword">long</span> e = <span class="number">1</span>;</span><br><span class="line">    e++;</span><br><span class="line">    <span class="keyword">float</span> f = <span class="number">1</span>;</span><br><span class="line">    f++;</span><br><span class="line">    <span class="keyword">double</span> g = <span class="number">1</span>;</span><br><span class="line">    g++;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的字节码为:</p>
+<table>
+<thead>
+<tr>
+<th>byte/a++</th>
+<th>char/b++</th>
+<th>short/c++</th>
+<th>int/d++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0: iconst_1<br>       1: istore_0<br>       2: iload_0<br>       3: iconst_1<br>       4: iadd<br>       5: i2b<br>       6: istore_0</td>
+<td>7: iconst_1<br>       8: istore_1<br>       9: iload_1<br>      10: iconst_1<br>      11: iadd<br>      12: i2c<br>      13: istore_1</td>
+<td>14: iconst_1<br>      15: istore_2<br>      16: iload_2<br>      17: iconst_1<br>      18: iadd<br>      19: i2s<br>      20: istore_2</td>
+<td>21: iconst_1<br>      22: istore_3<br>      23: iinc          3, 1</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">long/e++</th>
+<th style="text-align:left">float/f++</th>
+<th style="text-align:left">double/g++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">26: lconst_1<br>      27: lstore        4<br>      29: lload         4<br>      31: lconst_1<br>      32: ladd<br>      33: lstore        4</td>
+<td style="text-align:left">35: fconst_1<br>      36: fstore        6<br>      38: fload         6<br>      40: fconst_1<br>      41: fadd<br>      42: fstore        6</td>
+<td style="text-align:left">44: dconst_1<br>      45: dstore        7<br>      47: dload         7<br>      49: dconst_1<br>      50: dadd<br>      51: dstore        7</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到</p>
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>虚拟机操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte,char,short</td>
+<td>iadd 指令，int操作，利用i2b,i2c,i2s强转类型</td>
+</tr>
+<tr>
+<td>int</td>
+<td>iinc指令，int独有</td>
+</tr>
+<tr>
+<td>long,float,double</td>
+<td>对应ladd,fadd,dadd 指令，每种数据类型独有</td>
+</tr>
+</tbody>
+</table>
+<p>所以，<strong>当byte,char,short进行加减运算时，本质上还是int运算，故需要强制类型转换。</strong></p>
 
       
     </div>
@@ -317,17 +357,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/24/BufferedReader的lines问题/" rel="next" title="BufferedReader的lines">
-                <i class="fa fa-chevron-left"></i> BufferedReader的lines
+              <a href="/2019/08/27/从字节码看i=i++和i=++i/" rel="next" title="从字节码看i=i++和i=++i;">
+                <i class="fa fa-chevron-left"></i> 从字节码看i=i++和i=++i;
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/06/自定义ClassLoader时候遇到的一个问题/" rel="prev" title="自定义ClassLoader时候遇到的一个问题">
-                自定义ClassLoader时候遇到的一个问题 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -427,7 +463,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BindingException"><span class="nav-number">1.</span> <span class="nav-text">BindingException</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapperMethod"><span class="nav-number">2.</span> <span class="nav-text">MapperMethod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapperProxy"><span class="nav-number">3.</span> <span class="nav-text">MapperProxy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapperProxyFactory-MapperRegistry"><span class="nav-number">4.</span> <span class="nav-text">MapperProxyFactory,MapperRegistry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后"><span class="nav-number">5.</span> <span class="nav-text">最后</span></a></li></ol></div>
+              <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
         </section>

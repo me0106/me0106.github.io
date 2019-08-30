@@ -84,17 +84,17 @@
 
 
 
-<meta name="description" content="对于i++源码： 12345public int plus()&amp;#123;	int i=0;    i=i++;    return i;&amp;#125; 字节码： 123456789public int test();  Code:     0: iconst_1   				//int类型 1  放入栈顶     1: istore_1   				//栈顶int类型数值放入局部变量表第二个位置">
+<meta name="description" content="对于i++源码： 12345public int plus()&amp;#123;    int i=0;    i=i++;    return i;&amp;#125; 字节码： 123456789public int test();  Code:     0: iconst_1                  //int类型 1  放入栈顶     1: istore_1">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从字节码看i=i++和i=++i;">
 <meta property="og:url" content="http://yoursite.com/2019/08/27/从字节码看i=i++和i=++i/index.html">
 <meta property="og:site_name" content="南楼">
-<meta property="og:description" content="对于i++源码： 12345public int plus()&amp;#123;	int i=0;    i=i++;    return i;&amp;#125; 字节码： 123456789public int test();  Code:     0: iconst_1   				//int类型 1  放入栈顶     1: istore_1   				//栈顶int类型数值放入局部变量表第二个位置">
+<meta property="og:description" content="对于i++源码： 12345public int plus()&amp;#123;    int i=0;    i=i++;    return i;&amp;#125; 字节码： 123456789public int test();  Code:     0: iconst_1                  //int类型 1  放入栈顶     1: istore_1">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-08-27T01:33:09.539Z">
+<meta property="og:updated_time" content="2019-08-30T03:25:30.617Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从字节码看i=i++和i=++i;">
-<meta name="twitter:description" content="对于i++源码： 12345public int plus()&amp;#123;	int i=0;    i=i++;    return i;&amp;#125; 字节码： 123456789public int test();  Code:     0: iconst_1   				//int类型 1  放入栈顶     1: istore_1   				//栈顶int类型数值放入局部变量表第二个位置">
+<meta name="twitter:description" content="对于i++源码： 12345public int plus()&amp;#123;    int i=0;    i=i++;    return i;&amp;#125; 字节码： 123456789public int test();  Code:     0: iconst_1                  //int类型 1  放入栈顶     1: istore_1">
 
 
 
@@ -273,20 +273,20 @@
 
       
         <h4 id="对于i"><a href="#对于i" class="headerlink" title="对于i++"></a>对于i++</h4><p>源码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">plus</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    i=i++;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">plus</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    i=i++;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>字节码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int test();</span><br><span class="line">  Code:</span><br><span class="line">     0: iconst_1   				//int类型 1  放入栈顶</span><br><span class="line">     1: istore_1   				//栈顶int类型数值放入局部变量表第二个位置 </span><br><span class="line">     2: iload_1					//将局部变量表第二个位置数据放入栈顶</span><br><span class="line">     3: iinc          1, 1		//将局部变量表第二个位置的元素+1</span><br><span class="line">     6: istore_1					//将栈顶元素放入局部变量表第二个位置</span><br><span class="line">     7: iload_1					//将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     8: ireturn					//将栈顶元素返回</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int test();</span><br><span class="line">  Code:</span><br><span class="line">     0: iconst_1                  //int类型 1  放入栈顶</span><br><span class="line">     1: istore_1                  //栈顶int类型数值放入局部变量表第二个位置 </span><br><span class="line">     2: iload_1                   //将局部变量表第二个位置数据放入栈顶</span><br><span class="line">     3: iinc          1, 1        //将局部变量表第二个位置的元素+1</span><br><span class="line">     6: istore_1                  //将栈顶元素放入局部变量表第二个位置</span><br><span class="line">     7: iload_1                   //将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     8: ireturn                   //将栈顶元素返回</span><br></pre></td></tr></table></figure>
 <p>注：局部变量表的第一个位置留给this</p>
-<h4 id="对于-i"><a href="#对于-i" class="headerlink" title="对于++i"></a>对于++i</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">plus</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    i=++i;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int test();</span><br><span class="line">  Code:</span><br><span class="line">     0: iconst_1						//int类型 1  放入栈顶</span><br><span class="line">     1: istore_1						//栈顶int类型数值放入局部变量表第二个位置 </span><br><span class="line">     2: iinc          1, 1			//将局部变量表第二个位置的元素+1</span><br><span class="line">     5: iload_1						//将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     6: istore_1						//将栈顶元素放入局部变量表第二个位置</span><br><span class="line">     7: iload_1						//将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     8: ireturn						//将栈顶元素返回</span><br></pre></td></tr></table></figure>
+<h4 id="对于-i"><a href="#对于-i" class="headerlink" title="对于++i"></a>对于++i</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">plus</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    i=++i;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public int test();</span><br><span class="line">  Code:</span><br><span class="line">     0: iconst_1            //int类型 1  放入栈顶</span><br><span class="line">     1: istore_1            //栈顶int类型数值放入局部变量表第二个位置 </span><br><span class="line">     2: iinc          1, 1  //将局部变量表第二个位置的元素+1</span><br><span class="line">     5: iload_1             //将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     6: istore_1            //将栈顶元素放入局部变量表第二个位置</span><br><span class="line">     7: iload_1             //将局部变量表第二个位置的值放入栈顶</span><br><span class="line">     8: ireturn             //将栈顶元素返回</span><br></pre></td></tr></table></figure>
 <h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><p><strong>i++:</strong> 在字节码2,3,6,7的执行过程里，存在两个i值的情况，</p>
-<p>​    本地变量表存在一个 i，栈顶存在一个 i，    <strong>这是在iinc 之前发生的事</strong></p>
-<p>​    然后iinc，将变量表的i增加了1，    </p>
-<p>​    紧接着，又将栈顶的i 写入变量表的i的位置，导致修改之后的i被覆盖。</p>
+<p>​         本地变量表存在一个 i，栈顶存在一个 i，         <strong>这是在iinc 之前发生的事</strong></p>
+<p>​         然后iinc，将变量表的i增加了1，         </p>
+<p>​         紧接着，又将栈顶的i 写入变量表的i的位置，导致修改之后的i被覆盖。</p>
 <p><strong>++i:</strong>  也存在两个i的情况，但是入栈的顺序不同，即：</p>
-<p>​    ++i的第二个i是在<strong>执行iinc之后再放入栈顶</strong>，</p>
-<p>​    此时本地变量表存在一个 i，栈顶存在一个 i，<strong>不过这是在iinc之后发生的事</strong></p>
-<p>​    结果是栈顶和变量表的i都是1，再写回变量表的时候    并没有发生变化</p>
+<p>​         ++i的第二个i是在<strong>执行iinc之后再放入栈顶</strong>，</p>
+<p>​         此时本地变量表存在一个 i，栈顶存在一个 i，<strong>不过这是在iinc之后发生的事</strong></p>
+<p>​         结果是栈顶和变量表的i都是1，再写回变量表的时候         并没有发生变化</p>
 
       
     </div>
@@ -318,6 +318,10 @@
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/30/基本类型的++操作原理/" rel="prev" title="基本类型的++操作原理">
+                基本类型的++操作原理 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -385,7 +389,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
