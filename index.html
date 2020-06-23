@@ -169,6 +169,114 @@
             
 
   
+    <article id="post-搭建自己的git服务器" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/2020/06/23/搭建自己的git服务器/">搭建自己的git服务器</a>
+	
+    </h1>
+  
+
+
+  
+  
+<a href="/2020/06/23/搭建自己的git服务器/" class="archive-article-date">
+        <time datetime="2020-06-23T15:27:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-23</time>
+</a>
+
+  
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>打算重新开始写博客，直接用现成的Hexo。Hexo教程一般使用Github作为默认的服务器，但是我想推送到自己的服务器上，所以打算自己搭建一个博客仓库。</p>
+<h2 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h2><p>Linux, Linux需要安装git, 本地安装git</p>
+<h2 id="采用RSA认证"><a href="#采用RSA认证" class="headerlink" title="采用RSA认证"></a>采用RSA认证</h2><p>常见的RSA git 链接一般都是：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git@xxx.xxx.xxx.xxx:xxx.git</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>[git]是Linux用户名，</p>
+</li>
+<li><p>[@]之后是服务器ip，</p>
+</li>
+<li><p>[:]后面是git仓库在Linux系统中的绝对路径。</p>
+</li>
+<li><p>RSA公私钥就是登录Linux系统的git用户的登录秘钥</p>
+</li>
+</ul>
+<p>这么分析下来，过程就很简单了，先创建Linux用户：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> -m 创建用户目录 -s 指定shell   -d 用户目录位置 </span><br><span class="line">useradd git -m -s /bin/bash -d /home/git  </span><br><span class="line"><span class="meta">#</span> 切换到git用户</span><br><span class="line">su git &amp;&amp; cd ~</span><br><span class="line"><span class="meta">#</span>创建.ssh目录并且将权限修改为700</span><br><span class="line">mkdir .ssh &amp;&amp; chmod 700 .ssh</span><br><span class="line"><span class="meta">#</span>将Git客户端的公钥复制到.ssh目录，重命名为 authorized_keys</span><br><span class="line">echo '公钥....' &gt; .ssh/authorized_keys</span><br><span class="line"><span class="meta">#</span>权限修改为600</span><br><span class="line">chmod 600 .ssh/authorized_keys</span><br><span class="line"><span class="meta">#</span>客户端测试能否通过私钥登录git用户，不能就查看问题在哪儿</span><br><span class="line"><span class="meta">#</span>.....</span><br></pre></td></tr></table></figure></p>
+<p>之后在git用户下新建仓库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>当前目录为~，用户为git</span><br><span class="line"><span class="meta">#</span>创建仓库文件夹并初始化仓库  --bare必需，不然后面push不方便</span><br><span class="line">mkdir blog.git &amp;&amp; cd blog.git &amp;&amp; git init --bare .git</span><br></pre></td></tr></table></figure>
+<p>客户端进行校验，看能否clone和push</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git clone git@xxx.xxx.xxx.xxx:blog.git</span><br><span class="line"><span class="meta">#</span>会显示一个warn，clone一个空仓库,仓库名自动删除blog.git中的.git后缀</span><br><span class="line"><span class="meta">#</span>warning: You appear to have cloned an empty repository</span><br><span class="line"><span class="meta">#</span>测试push,</span><br><span class="line">cd blog &amp;&amp;  echo HelloWorld! &gt; hw</span><br><span class="line">git add .</span><br><span class="line">git commit -m "Initial commit"</span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+<p>服务器查看push日志</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>当前环境 用户：git 目录：~</span><br><span class="line">cd blog.git &amp;&amp; git log </span><br><span class="line"><span class="meta">#</span>显示刚才提交的log....</span><br></pre></td></tr></table></figure>
+<h2 id="采用https"><a href="#采用https" class="headerlink" title="采用https"></a>采用https</h2><p>//待续。。。</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/2020/06/23/搭建自己的git服务器/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-基本类型的++操作原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1016,99 +1124,6 @@
 
 
   
-    <article id="post-BufferedReader的lines问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="/2018/12/24/BufferedReader的lines问题/">BufferedReader的lines</a>
-	
-    </h1>
-  
-
-
-  
-  
-<a href="/2018/12/24/BufferedReader的lines问题/" class="archive-article-date">
-        <time datetime="2018-12-24T00:37:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-24</time>
-</a>
-
-  
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <p>用socket处理http请求的时候，为了省事，直接使用BufferedReader类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BufferedReader r = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(socket.getInputStream()));</span><br><span class="line">String res = r.lines().collect(Collectors.joining());</span><br></pre></td></tr></table></figure>
-<p>发现在进行lines处理的时候，整个线程会阻塞,但是只处理第一行的时候不会阻塞，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String res = r.lines().findFirst().orElse(<span class="string">""</span>);</span><br></pre></td></tr></table></figure>
-<p>查询之后才知道，lines方式本质是循环(通过迭代器)调用readLine方法，且readLine方法只有遇到\r ,\n ,\r\n才会返回，当stream处理到最后一行的时候，猜测可能是requestHeaders并没有换行符，导致readLine一直等待，<br>解决：最后决定不使用lines方法，直接用read(char[])方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] chars = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">1024</span>];</span><br><span class="line">r.read(chars);</span><br><span class="line">String request = String.valueOf(chars).trim();</span><br></pre></td></tr></table></figure>
-<p>也可以用CharBuffer，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CharBuffer allocate = CharBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">r.read(allocate);</span><br><span class="line">System.out.println(allocate.flip().toString());</span><br></pre></td></tr></table></figure>
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">IO</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Java基础</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="/2018/12/24/BufferedReader的lines问题/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1295,6 +1310,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">jvm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
