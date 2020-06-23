@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <meta name="description" content="好奇ReentrantLock源码， 就看了下，顺便做个笔记，ReentrantLock有两种锁，一种是公平锁fairSync，另一个是非公平锁NonfairSync，默认情况下是非公平锁。 然后看lock上锁方法发现调用的是AQS的acquire方法if判断利用的短路特性，tryAcquire(int)是真正的抢锁方法，如果抢锁成功，直接结束判断，如果抢锁失败，进行acquireQueued(a">
-<meta name="keywords" content="源码,并发,多线程">
+<meta name="keywords" content="Java,源码,并发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ReentrantLock源码笔记">
 <meta property="og:url" content="http://yoursite.com/2019/08/07/ReentrantLock源码笔记/index.html">
@@ -19,7 +19,7 @@
 <meta property="og:description" content="好奇ReentrantLock源码， 就看了下，顺便做个笔记，ReentrantLock有两种锁，一种是公平锁fairSync，另一个是非公平锁NonfairSync，默认情况下是非公平锁。 然后看lock上锁方法发现调用的是AQS的acquire方法if判断利用的短路特性，tryAcquire(int)是真正的抢锁方法，如果抢锁成功，直接结束判断，如果抢锁失败，进行acquireQueued(a">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/08/07/ReentrantLock源码笔记/acquire.png">
-<meta property="og:updated_time" content="2020-06-22T13:21:15.948Z">
+<meta property="og:updated_time" content="2020-06-23T16:13:49.617Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ReentrantLock源码笔记">
 <meta name="twitter:description" content="好奇ReentrantLock源码， 就看了下，顺便做个笔记，ReentrantLock有两种锁，一种是公平锁fairSync，另一个是非公平锁NonfairSync，默认情况下是非公平锁。 然后看lock上锁方法发现调用的是AQS的acquire方法if判断利用的短路特性，tryAcquire(int)是真正的抢锁方法，如果抢锁成功，直接结束判断，如果抢锁失败，进行acquireQueued(a">
@@ -216,15 +216,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">并发</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多线程</a>
         		</li>
       		
 		</ul>
@@ -400,7 +400,7 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Java基础</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -428,19 +428,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">多线程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SSH</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -472,11 +464,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">ClassLoader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">classloader</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
             
             <div class="clearfix"></div>

@@ -205,13 +205,13 @@
 <li><p>RSA公私钥就是登录Linux系统的git用户的登录秘钥</p>
 </li>
 </ul>
-<p>这么分析下来，过程就很简单了，先创建Linux用户：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> -m 创建用户目录 -s 指定shell   -d 用户目录位置 </span><br><span class="line">useradd git -m -s /bin/bash -d /home/git  </span><br><span class="line"><span class="meta">#</span> 切换到git用户</span><br><span class="line">su git &amp;&amp; cd ~</span><br><span class="line"><span class="meta">#</span>创建.ssh目录并且将权限修改为700</span><br><span class="line">mkdir .ssh &amp;&amp; chmod 700 .ssh</span><br><span class="line"><span class="meta">#</span>将Git客户端的公钥复制到.ssh目录，重命名为 authorized_keys</span><br><span class="line">echo '公钥....' &gt; .ssh/authorized_keys</span><br><span class="line"><span class="meta">#</span>权限修改为600</span><br><span class="line">chmod 600 .ssh/authorized_keys</span><br><span class="line"><span class="meta">#</span>客户端测试能否通过私钥登录git用户，不能就查看问题在哪儿</span><br><span class="line"><span class="meta">#</span>.....</span><br></pre></td></tr></table></figure></p>
+<p>这么分析下来，过程就很简单了，先创建Linux用户：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> -m 创建用户目录 -s 指定shell   -d 用户目录位置 </span></span><br><span class="line">useradd git -m -s /bin/bash -d /home/git  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 切换到git用户</span></span><br><span class="line">su git &amp;&amp; cd ~</span><br><span class="line"><span class="meta">#</span><span class="bash">创建.ssh目录并且将权限修改为700</span></span><br><span class="line">mkdir .ssh &amp;&amp; chmod 700 .ssh</span><br><span class="line"><span class="meta">#</span><span class="bash">将Git客户端的公钥复制到.ssh目录，重命名为 authorized_keys</span></span><br><span class="line">echo '公钥....' &gt; .ssh/authorized_keys</span><br><span class="line"><span class="meta">#</span><span class="bash">权限修改为600</span></span><br><span class="line">chmod 600 .ssh/authorized_keys</span><br><span class="line"><span class="meta">#</span><span class="bash">客户端测试能否通过私钥登录git用户，不能就查看问题在哪儿</span></span><br><span class="line"><span class="meta">#</span><span class="bash">.....</span></span><br></pre></td></tr></table></figure></p>
 <p>之后在git用户下新建仓库</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>当前目录为~，用户为git</span><br><span class="line"><span class="meta">#</span>创建仓库文件夹并初始化仓库  --bare必需，不然后面push不方便</span><br><span class="line">mkdir blog.git &amp;&amp; cd blog.git &amp;&amp; git init --bare .git</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">当前目录为~，用户为git</span></span><br><span class="line"><span class="meta">#</span><span class="bash">创建仓库文件夹并初始化仓库  --bare必需，不然后面push不方便</span></span><br><span class="line">mkdir blog.git &amp;&amp; cd blog.git &amp;&amp; git init --bare .git</span><br></pre></td></tr></table></figure>
 <p>客户端进行校验，看能否clone和push</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git clone git@xxx.xxx.xxx.xxx:blog.git</span><br><span class="line"><span class="meta">#</span>会显示一个warn，clone一个空仓库,仓库名自动删除blog.git中的.git后缀</span><br><span class="line"><span class="meta">#</span>warning: You appear to have cloned an empty repository</span><br><span class="line"><span class="meta">#</span>测试push,</span><br><span class="line">cd blog &amp;&amp;  echo HelloWorld! &gt; hw</span><br><span class="line">git add .</span><br><span class="line">git commit -m "Initial commit"</span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git clone git@xxx.xxx.xxx.xxx:blog.git</span><br><span class="line"><span class="meta">#</span><span class="bash">会显示一个warn，<span class="built_in">clone</span>一个空仓库,仓库名自动删除blog.git中的.git后缀</span></span><br><span class="line"><span class="meta">#</span><span class="bash">warning: You appear to have cloned an empty repository</span></span><br><span class="line"><span class="meta">#</span><span class="bash">测试push,</span></span><br><span class="line">cd blog &amp;&amp;  echo HelloWorld! &gt; hw</span><br><span class="line">git add .</span><br><span class="line">git commit -m "Initial commit"</span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
 <p>服务器查看push日志</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>当前环境 用户：git 目录：~</span><br><span class="line">cd blog.git &amp;&amp; git log </span><br><span class="line"><span class="meta">#</span>显示刚才提交的log....</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">当前环境 用户：git 目录：~</span></span><br><span class="line">cd blog.git &amp;&amp; git log </span><br><span class="line"><span class="meta">#</span><span class="bash">显示刚才提交的<span class="built_in">log</span>....</span></span><br></pre></td></tr></table></figure>
 <h2 id="采用https"><a href="#采用https" class="headerlink" title="采用https"></a>采用https</h2><p>//待续。。。</p>
 
     
@@ -400,7 +400,7 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Java基础</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -428,19 +428,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">多线程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SSH</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -472,11 +464,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">ClassLoader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">classloader</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
             
             <div class="clearfix"></div>

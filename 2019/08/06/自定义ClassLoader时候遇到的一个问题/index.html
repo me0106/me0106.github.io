@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <meta name="description" content="在写自定义ClassLoader时候，发现报了个错,说是不能加载java.lang开头的类， 但是代码好像也没加载java.lang包的类啊  查了一会儿，发现原来是java在用自定义ClassLoader加载类的时候，会重新用ClassLoader加载类的所有父类，所以就导致了重新加载java.lang.Object。 加个判断，完事 1234567public Class&amp;lt;?&amp;gt; l">
-<meta name="keywords" content="jvm,classloader">
+<meta name="keywords" content="jvm,ClassLoader">
 <meta property="og:type" content="article">
 <meta property="og:title" content="自定义ClassLoader时候遇到的一个问题">
 <meta property="og:url" content="http://yoursite.com/2019/08/06/自定义ClassLoader时候遇到的一个问题/index.html">
@@ -20,7 +20,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/08/06/自定义ClassLoader时候遇到的一个问题/exception.png">
 <meta property="og:image" content="http://yoursite.com/2019/08/06/自定义ClassLoader时候遇到的一个问题/code.png">
-<meta property="og:updated_time" content="2020-06-22T13:21:32.309Z">
+<meta property="og:updated_time" content="2020-06-23T16:14:23.257Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="自定义ClassLoader时候遇到的一个问题">
 <meta name="twitter:description" content="在写自定义ClassLoader时候，发现报了个错,说是不能加载java.lang开头的类， 但是代码好像也没加载java.lang包的类啊  查了一会儿，发现原来是java在用自定义ClassLoader加载类的时候，会重新用ClassLoader加载类的所有父类，所以就导致了重新加载java.lang.Object。 加个判断，完事 1234567public Class&amp;lt;?&amp;gt; l">
@@ -219,7 +219,7 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">classloader</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">ClassLoader</a>
         		</li>
       		
 		</ul>
@@ -395,7 +395,7 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Java基础</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -423,19 +423,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">多线程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SSH</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -467,11 +459,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">ClassLoader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">classloader</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
             
             <div class="clearfix"></div>

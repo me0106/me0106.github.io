@@ -11,14 +11,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <meta name="description" content="分析之前的招不太管用，然后只能从字节码下手，分析之后字符串混淆的字节码基本是 123SIPUSH xxxxSIPUSH xxxxINVOKESTATIC a(int,int)String; 这种形式，于是打算使用ASM修改字节码，将这一段改成具体的字符串入栈，即： 1LDC &amp;quot;xxxxxx&amp;quot; 修改字节码时，并没有使用原始的ClassVisitor和MethodVisitor，而">
-<meta name="keywords" content="ASM,bytecode">
+<meta name="keywords" content="Java,ASM,bytecode">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java逆向记录（三），ASM的使用">
 <meta property="og:url" content="http://yoursite.com/2019/08/23/Java逆向记录（三），ASM的使用/index.html">
 <meta property="og:site_name" content="南楼">
 <meta property="og:description" content="分析之前的招不太管用，然后只能从字节码下手，分析之后字符串混淆的字节码基本是 123SIPUSH xxxxSIPUSH xxxxINVOKESTATIC a(int,int)String; 这种形式，于是打算使用ASM修改字节码，将这一段改成具体的字符串入栈，即： 1LDC &amp;quot;xxxxxx&amp;quot; 修改字节码时，并没有使用原始的ClassVisitor和MethodVisitor，而">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-06-22T13:20:42.478Z">
+<meta property="og:updated_time" content="2020-06-23T16:14:38.573Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java逆向记录（三），ASM的使用">
 <meta name="twitter:description" content="分析之前的招不太管用，然后只能从字节码下手，分析之后字符串混淆的字节码基本是 123SIPUSH xxxxSIPUSH xxxxINVOKESTATIC a(int,int)String; 这种形式，于是打算使用ASM修改字节码，将这一段改成具体的字符串入栈，即： 1LDC &amp;quot;xxxxxx&amp;quot; 修改字节码时，并没有使用原始的ClassVisitor和MethodVisitor，而">
@@ -215,6 +215,10 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ASM</a>
         		</li>
       		 
@@ -395,7 +399,7 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Java基础</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -423,19 +427,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">多线程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SSH</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -467,11 +463,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">ClassLoader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">classloader</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
             
             <div class="clearfix"></div>
