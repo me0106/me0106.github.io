@@ -169,6 +169,112 @@
             
 
   
+    <article id="post-mybatis源码浅析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/2018/12/25/mybatis源码浅析/">mybatis源码浅析</a>
+	
+    </h1>
+  
+
+
+  
+  
+<a href="/2018/12/25/mybatis源码浅析/" class="archive-article-date">
+        <time datetime="2018-12-25T00:24:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-25</time>
+</a>
+
+  
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <p>常用mybatis的Mapper接口形式，但是没怎么查看具体实现，抽空看了一下，</p>
+<p>Mapper接口的动态绑定实现在 <em>org.apache.ibatis.binding</em> 包，该包下面有<em>BindingException,MapperMethod,MapperProxy,MapperProxyFactory,MapperRegistry</em>几个类。<br><img src="/2018/12/25/mybatis源码浅析/binding.png" alt="bind"></p>
+<h3 id="BindingException"><a href="#BindingException" class="headerlink" title="BindingException"></a><strong>BindingException</strong></h3><p>异常类，在进行MapperBind过程中发生的异常</p>
+<h3 id="MapperMethod"><a href="#MapperMethod" class="headerlink" title="MapperMethod"></a><strong>MapperMethod</strong></h3><p>每个<em>MapperMethod</em>代表一个接口方法，并且和<em>xml标签的sql语句标签</em>进行关联</p>
+<p><em>MapperMethod</em>有一个静态内部类<em>SqlCommand</em>，以及一个该类的对象，<em>command</em></p>
+<p><img src="/2018/12/25/mybatis源码浅析/sqlCommand.png" alt="command"></p>
+<p><em>command</em>对象指明了<em>MapperMethod</em>所关联的<em>MappedStatement</em>对象的id</p>
+<p>(每个xml文件的<em>insert/delete/update/select</em>标签即对应一个<em>MappedStatement</em>对象)</p>
+<p>关联方式是，command对象的name属性关联MappedStatement的Id，首先将className和methodName拼接成statementId，然后查找statementId对应的对象，如果不存在，并且接口方法和被拦截的方法的所属类是同一个，说明该接口不继承其他接口，并且没有对应的mapper实现，返回null。否则，取出所有的继承的接口，查找对应的statement。<br><img src="/2018/12/25/mybatis源码浅析/resolveStatement.png" alt="resloveStatement"></p>
+<h3 id="MapperProxy"><a href="#MapperProxy" class="headerlink" title="MapperProxy"></a><strong>MapperProxy</strong></h3><p>实现了<em>InvocationHandler</em>接口，即接口方法的拦截器，<br><img src="/2018/12/25/mybatis源码浅析/MapperProxy.png" alt="resloveStatement"></p>
+<p>invoke方法的第一个if，判断是不是Object类的方法，是则调用当前MapperProxy对象的公共方法。</p>
+<p>invoke方法的第二个if,判断是不是接口的default方法(java8特性)</p>
+<p>最后则是调用cachedMapperMethod方法，从缓存获取真正的MapperMethod进行调用</p>
+<h3 id="MapperProxyFactory-MapperRegistry"><a href="#MapperProxyFactory-MapperRegistry" class="headerlink" title="MapperProxyFactory,MapperRegistry"></a><strong>MapperProxyFactory,MapperRegistry</strong></h3><p>MapperProxyFactory是生成接口实现对象的真正类，</p>
+<p>MapperRegistry则是保存 接口和接口对应的MapperProxyFactory的类。每次调用getMapper的时候，都会用MapperProxyFactory对象的newInstance生成一个新的Mapper对象</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a><strong>最后</strong></h3><p>Mybatis的接口和具体的Xml绑定的实现方式说到底还是<strong>jdk动态代理</strong>。我们所定义的DAO层的Mapper接口通过jdk的动态代理生成一个具体的对象；我们在用这个对象进行方法调用的时候，会通过InvocationHandler进行调用拦截，然后将DAO层接口的全限定名和方法名进行拼接，获取真正的存在于xml里面的SQL，所以xml的namespace写的是类的全限定名，而每个curd块的id是方法名。</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Mybatis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/2018/12/25/mybatis源码浅析/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-BufferedReader的lines问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -846,6 +952,10 @@
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">多线程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">AspectJ</a>
               </li>
              
@@ -862,14 +972,6 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">并发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
@@ -878,11 +980,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Fastjson</a>
+                <a href="javascript:void(0)" class="js-tag color3">并发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -890,15 +992,23 @@
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Fastjson</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Mybatis</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Mybatis</a>
               </li>
              
               <li class="article-tag-list-item">
