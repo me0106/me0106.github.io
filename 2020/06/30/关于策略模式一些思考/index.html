@@ -6,17 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: 逆向工程 | 南楼</title>
+  <title>关于策略模式一些思考 | 南楼</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta property="og:type" content="website">
-<meta property="og:title" content="南楼">
-<meta property="og:url" content="http://yoursite.com/tags/逆向工程/index.html">
+  <meta name="description" content="本篇文章来源于和球哥吹牛逼的总结。 原因前两天我在开开心心地当个死宅，球哥突然甩给我一个链接，说这篇文章的策略模式实现是不是有问题。 链接里面的策略模式是这么写的： 12345678910111213/** * 以下只有核心代码 * ChargeEnum为策略类型 * ChargeStrategy策略接口 * StrategyFactory策略工厂 * Context运行时上下文 */enum C">
+<meta name="keywords" content="Java,设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于策略模式一些思考">
+<meta property="og:url" content="http://yoursite.com/2020/06/30/关于策略模式一些思考/index.html">
 <meta property="og:site_name" content="南楼">
+<meta property="og:description" content="本篇文章来源于和球哥吹牛逼的总结。 原因前两天我在开开心心地当个死宅，球哥突然甩给我一个链接，说这篇文章的策略模式实现是不是有问题。 链接里面的策略模式是这么写的： 12345678910111213/** * 以下只有核心代码 * ChargeEnum为策略类型 * ChargeStrategy策略接口 * StrategyFactory策略工厂 * Context运行时上下文 */enum C">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-06-30T15:04:37.395Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="南楼">
+<meta name="twitter:title" content="关于策略模式一些思考">
+<meta name="twitter:description" content="本篇文章来源于和球哥吹牛逼的总结。 原因前两天我在开开心心地当个死宅，球哥突然甩给我一个链接，说这篇文章的策略模式实现是不是有问题。 链接里面的策略模式是这么写的： 12345678910111213/** * 以下只有核心代码 * ChargeEnum为策略类型 * ChargeStrategy策略接口 * StrategyFactory策略工厂 * Context运行时上下文 */enum C">
   
   
     <link rel="icon" href="/favicon.ico">
@@ -162,65 +167,131 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-关于策略模式一些思考" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
   
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2019/08/23/java逆向总结/" class="archive-article-date">
-        <time datetime="2019-08-23T04:26:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-23</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2019/08/23/java逆向总结/">java逆向总结</a>
-	
+    <h1 class="article-title" itemprop="name">
+      关于策略模式一些思考
     </h1>
   
 
 
-        <div class="article-info info-on-right">
-          
+  
+  
+<a href="/2020/06/30/关于策略模式一些思考/" class="archive-article-date">
+        <time datetime="2020-06-30T13:13:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-30</time>
+</a>
+
+  
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <p>本篇文章来源于和球哥吹牛逼的总结。</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>前两天我在开开心心地当个死宅，球哥突然甩给我一个链接，说这篇文章的策略模式实现是不是有问题。</p>
+<p>链接里面的策略模式是这么写的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 以下只有核心代码</span></span><br><span class="line"><span class="comment"> * ChargeEnum为策略类型</span></span><br><span class="line"><span class="comment"> * ChargeStrategy策略接口</span></span><br><span class="line"><span class="comment"> * StrategyFactory策略工厂</span></span><br><span class="line"><span class="comment"> * Context运行时上下文</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">enum</span> ChargeEnum &#123;</span><br><span class="line">    CARD, ACCOUNT, PHONE</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ChargeStrategy</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">charge</span><span class="params">(<span class="keyword">double</span> num, ChargeEnum e)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>   
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StrategyFactory</span> </span>&#123;</span><br><span class="line">    <span class="comment">//将策略和枚举关联，put相关的代码已经省略</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;ChargeEnum, ChargeStrategy&gt; maps = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ChargeStrategy <span class="title">get</span><span class="params">(ChargeEnum e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> maps.get(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">service</span><span class="params">(<span class="keyword">double</span> num, ChargeEnum e)</span> </span>&#123;</span><br><span class="line">        StrategyFactory.get(e).charge(num,e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    代码乍一看确实像是用上了策略，但是仔细一琢磨，就出问题了，重点是这个枚举。将充值策略种类定义为枚举，这就直接把代码写死了；新扩展策略还需要修改枚举类，但是设计模式原则是<strong>对扩展开放，对修改封闭</strong>。</p>
+<p>​    </p>
+<h2 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h2><p>既然主要问题是这个枚举，那么只要想办法让可变参数替换枚举就行了。</p>
+<h4 id="方案一：从配置文件读取，反射创建策略"><a href="#方案一：从配置文件读取，反射创建策略" class="headerlink" title="方案一：从配置文件读取，反射创建策略"></a>方案一：从配置文件读取，反射创建策略</h4><p>​    枚举类本质上就是一个配置文件，记录了所有的策略，那么既然是策略文件，那么我们可以使用配置文件将策略类替换掉。也就是将所有策略以配置文件的形式提供，以键值对的方式进行关联策略名和类名。使用简单工厂进行启动时加载，即：</p>
+<ol>
+<li>使用strategy.properties存放策略和策略类的全限定吗名。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">account=xxx.xxx.AccountStrategy</span><br><span class="line">phone=xxx.xxx.PhoneStrategy</span><br><span class="line">card=xxx.xxx.CardStrategy</span><br></pre></td></tr></table></figure>
+<ol>
+<li>工厂读取文件，创建实例：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Factory</span></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> Properties prop;</span><br><span class="line">    <span class="keyword">static</span> Map&lt;String,Strategy&gt; stratigies;</span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        <span class="comment">//init prop</span></span><br><span class="line">        ....</span><br><span class="line">        <span class="comment">//反射创建策略</span></span><br><span class="line">        prop.each((k,v)-&gt;stratigies.put(k,Class.forName(v).newInstance()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其他地方就可以直接字符串取具体策略，添加新的策略只需要将配置写入文件即可。</p>
+<h4 id="方案二：采用策略抽象类"><a href="#方案二：采用策略抽象类" class="headerlink" title="方案二：采用策略抽象类"></a>方案二：采用策略抽象类</h4><p>​    该方案的核心是让用户策略继承自抽象类，在抽象类中将当前策略和策略名注册到策略集合里面。策略名以构造器参数进行传递。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ChargeStrategy</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">charge</span><span class="params">(<span class="keyword">double</span> num)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractChargeStrategy</span> <span class="keyword">implements</span> <span class="title">ChargeStrategy</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AbstractChargeStrategy</span><span class="params">(String strategyName)</span></span>&#123;</span><br><span class="line">        <span class="comment">//....将自身注册到策略集中。</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="方案三：依赖注入"><a href="#方案三：依赖注入" class="headerlink" title="方案三：依赖注入"></a>方案三：依赖注入</h4><p>​    这种方式还是在看SpringMVC源码时看到的，当时觉得无比精妙。</p>
+<p>​    Spring DI提供了泛型List的注入，可以将IoC容器中的所有同类型的bean注入到一个List内。</p>
+<p>将所有策略注册为bean，而后利用IOC容器注入到到一个strategyComposite实现类内部，对外依旧表现为一个策略。。同时将策略模式的参数封装为一个entity，entity内部指定了当前需要的策略类型，使用时只需要提交参数给Composite即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChargeVO</span>(<span class="title">num</span>,<span class="title">selectedStrategy</span>)</span>;</span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ChargeStrategy</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">charge</span><span class="params">(ChargeVO vo)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">support</span><span class="params">(Object o)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChargeStrategyComposite</span> <span class="keyword">implements</span> <span class="title">ChargeStrategy</span></span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> List&lt;ChargeStrategy&gt; strategies;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 必须使用构造器注入，不然将循环引用</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStrategies</span><span class="params">(List&lt;ChargeStrategy&gt; strayegies)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.strategies=strategies;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">charge</span><span class="params">(ChargeVO vo)</span></span>&#123;</span><br><span class="line">        <span class="comment">//伪代码</span></span><br><span class="line">        strategies.filterSupport(vo).charge(vo);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//.....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    第三种方案中印象比较深刻的应该是SpringMVC中的<em>HandlerMethodArgumentResolver</em>接口，该接口主要是用来进行参数注入的，像@RequestParam，@SessionAttribute，@PathVariable都是该接口的实现类。而这些策略被封装到<em>HandlerMethodArgumentResolverComposite</em>类，在InvocableHandlerMethod中存在该类的实例，每次调用都会从composite过一遍。</p>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">逆向工程</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+    
 
     
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2020/06/26/Callable实现原理浅析/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Callable实现原理浅析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
           </div>
@@ -249,9 +320,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,

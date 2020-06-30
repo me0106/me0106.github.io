@@ -169,6 +169,98 @@
             
 
   
+    <article id="post-关于策略模式一些思考" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/2020/06/30/关于策略模式一些思考/">关于策略模式一些思考</a>
+	
+    </h1>
+  
+
+
+  
+  
+<a href="/2020/06/30/关于策略模式一些思考/" class="archive-article-date">
+        <time datetime="2020-06-30T13:13:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-30</time>
+</a>
+
+  
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <p>本篇文章来源于和球哥吹牛逼的总结。</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>前两天我在开开心心地当个死宅，球哥突然甩给我一个链接，说这篇文章的策略模式实现是不是有问题。</p>
+<p>链接里面的策略模式是这么写的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 以下只有核心代码</span></span><br><span class="line"><span class="comment"> * ChargeEnum为策略类型</span></span><br><span class="line"><span class="comment"> * ChargeStrategy策略接口</span></span><br><span class="line"><span class="comment"> * StrategyFactory策略工厂</span></span><br><span class="line"><span class="comment"> * Context运行时上下文</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">enum</span> ChargeEnum &#123;</span><br><span class="line">    CARD, ACCOUNT, PHONE</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ChargeStrategy</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">charge</span><span class="params">(<span class="keyword">double</span> num, ChargeEnum e)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    
+    <a class="article-more-a" href="/2020/06/30/关于策略模式一些思考/#more">more >></a>
+    
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/2020/06/30/关于策略模式一些思考/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Callable实现原理浅析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -204,48 +296,9 @@
 <p>线程是用 Thread 类来表示的。用户创建一个线程 的唯一方式是创建一个该类的对象；每个线程都与这样一个对象相关联。在对应的 Thread 对象上调用 start()方法将启动线程。</p>
 </blockquote>
 <p>所以说，<strong>创建线程的唯一方式只有new Thread()</strong>，线程在调用<strong>Thread#start()</strong>方法后启动。</p>
-<h2 id="二、实现Runnable-和继承Thread类的区别"><a href="#二、实现Runnable-和继承Thread类的区别" class="headerlink" title="二、实现Runnable 和继承Thread类的区别"></a>二、实现Runnable 和继承Thread类的区别</h2><p><strong>前提：</strong>在调用start方法启动一个线程后，目标线程将会执行Thread类的run方法。</p>
-<h3 id="1-继承Thread类"><a href="#1-继承Thread类" class="headerlink" title="1. 继承Thread类"></a>1. 继承Thread类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//该方法被调用</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        <span class="comment">//启动</span></span><br><span class="line">        <span class="keyword">new</span> MyThread().start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>所以调用流程如下：</p>
-<blockquote>
-<p>Thread#start()-&gt; MyThread#run()</p>
-</blockquote>
-<p>启动线程后，线程调用Thread实现类的run()方法</p>
-<h3 id="2-实现Runnable接口"><a href="#2-实现Runnable接口" class="headerlink" title="2. 实现Runnable接口"></a>2. 实现Runnable接口</h3><p>先看使用方式</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RunnableMain</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        var thread = <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">            <span class="comment">//该方法被调用</span></span><br><span class="line">        &#125;)。</span><br><span class="line">        thread.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>先看main方法第一行，创建了一个线程，参数是()-&gt;{}，对应到Thread类构造器：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Thread#run(),java version：zulu11</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">(Runnable target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(<span class="keyword">null</span>, target, <span class="string">"Thread-"</span> + nextThreadNum(), <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//....</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">Thread</span><span class="params">(ThreadGroup g, Runnable target, String name,</span></span></span><br><span class="line"><span class="function"><span class="params">                   <span class="keyword">long</span> stackSize, AccessControlContext acc,</span></span></span><br><span class="line"><span class="function"><span class="params">                   <span class="keyword">boolean</span> inheritThreadLocals)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">    <span class="keyword">this</span>.target = target;</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到我们自定义的Runnable对象被作为Thread的成员变量<em>target</em>，再看Thread类的run方法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Thread#run(),java version：zulu11</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (target != <span class="keyword">null</span>) &#123;</span><br><span class="line">        target.run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>真相大白，所以流程是：</p>
-<blockquote>
-<p>Thread#start()-&gt;Thread#run()-&gt;Runnable#run() </p>
-</blockquote>
-<p>启动线程后，线程会调用Thread类的run()方法,run()方法又调用Runnable接口的run()方法。</p>
-<h2 id="三、Callable实现原理"><a href="#三、Callable实现原理" class="headerlink" title="三、Callable实现原理"></a>三、Callable实现原理</h2><p>Callable接口的使用方法如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CallableMain</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        <span class="comment">//创建一个线程池</span></span><br><span class="line">        <span class="keyword">final</span> var service = Executors.newFixedThreadPool(<span class="number">1</span>);</span><br><span class="line">        <span class="comment">//提交一个Callable任务，返回一个future，</span></span><br><span class="line">        <span class="keyword">final</span> var future = service.submit(() -&gt; <span class="string">"Hello World!"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//阻塞获取结果</span></span><br><span class="line">            future.get();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>直接看线程池的<em>submit</em>：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AbstractExecutorService#submit(),java version:zulu11</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">Future&lt;T&gt; <span class="title">submit</span><span class="params">(Callable&lt;T&gt; task)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//参数校验</span></span><br><span class="line">    <span class="keyword">if</span> (task == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    <span class="comment">//将Callable封装为RunnableFuture</span></span><br><span class="line">    RunnableFuture&lt;T&gt; ftask = newTaskFor(task);</span><br><span class="line">    <span class="comment">//执行Future</span></span><br><span class="line">    execute(ftask);</span><br><span class="line">    <span class="keyword">return</span> ftask;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//....</span></span><br><span class="line"><span class="keyword">protected</span> &lt;T&gt; <span class="function">RunnableFuture&lt;T&gt; <span class="title">newTaskFor</span><span class="params">(Callable&lt;T&gt; callable)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> FutureTask&lt;T&gt;(callable);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>FutureTask：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//java version:zulu11</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RunnableFuture</span>&lt;<span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">Runnable</span>, <span class="title">Future</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FutureTask</span>&lt;<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">RunnableFuture</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FutureTask</span><span class="params">(Callable&lt;V&gt; callable)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (callable == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">        &#125;</span><br><span class="line">         <span class="comment">// 赋值给成员变量callable</span></span><br><span class="line">        <span class="keyword">this</span>.callable = callable; </span><br><span class="line">        <span class="keyword">this</span>.state = NEW;    </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//设置future的状态</span></span><br><span class="line">        <span class="keyword">if</span> (state != NEW || !RUNNER.compareAndSet(<span class="keyword">this</span>, <span class="keyword">null</span>, Thread.currentThread())) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Callable&lt;V&gt; c = callable;</span><br><span class="line">        <span class="comment">//状态判断。</span></span><br><span class="line">        <span class="keyword">if</span> (c != <span class="keyword">null</span> &amp;&amp; state == NEW) &#123;</span><br><span class="line">            V result;</span><br><span class="line">            <span class="keyword">boolean</span> ran;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//调用Callable#call()</span></span><br><span class="line">                result = c.call(); </span><br><span class="line">                <span class="comment">//执行完毕，成功</span></span><br><span class="line">                ran = <span class="keyword">true</span>;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">                result = <span class="keyword">null</span>;</span><br><span class="line">                <span class="comment">//执行出错</span></span><br><span class="line">                ran = <span class="keyword">false</span>;</span><br><span class="line">                <span class="comment">//将异常写回到Future</span></span><br><span class="line">                setException(ex); </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//执行成功并设置结果</span></span><br><span class="line">            <span class="keyword">if</span> (ran) &#123;</span><br><span class="line">                set(result); </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//....省略部分代码</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>看类的继承关系，我们可以发现， FutureTask实际上实现了Runnable接口的run方法，这是能交给线程池execute(Runnable) 的原因。</p>
-<ol>
-<li><p>将用户提交的Callable作为FutureTask的一个成员变量，封装成Runnable</p>
-</li>
-<li><p>线程池的execute()调用FutureTask的run()方法，</p>
-</li>
-<li><p>FutureTask#run()调用了Callable#call()方法。</p>
-</li>
-<li><p>按call的结果进行Future的结果进行设置。</p>
-</li>
-</ol>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总的来说，无论是重写run，实现Runnable，还是实现Callable。本质上都是实现一个任务(Task)，这个任务将由其他线程进行执行。</p>
-<blockquote>
-<p>Callable会被封装成Future+Runnable。</p>
-<p>Runnable由run()方法调用。</p>
-<p>而run()方法被由线程进行执行。</p>
-</blockquote>
-
+    
+    <a class="article-more-a" href="/2020/06/26/Callable实现原理浅析/#more">more >></a>
+    
     
 
     
@@ -335,25 +388,9 @@
 <h2 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h2><p>Linux, Linux需要安装git, 本地安装git</p>
 <h2 id="采用RSA认证"><a href="#采用RSA认证" class="headerlink" title="采用RSA认证"></a>采用RSA认证</h2><p>常见的RSA git 链接一般都是：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git@xxx.xxx.xxx.xxx:xxx.git</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>[git]是Linux用户名，</p>
-</li>
-<li><p>[@]之后是服务器ip，</p>
-</li>
-<li><p>[:]后面是git仓库在Linux系统中的绝对路径。</p>
-</li>
-<li><p>RSA公私钥就是登录Linux系统的git用户的登录秘钥</p>
-</li>
-</ul>
-<p>这么分析下来，过程就很简单了，先创建Linux用户：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> -m 创建用户目录 -s 指定shell   -d 用户目录位置 </span></span><br><span class="line">useradd git -m -s /bin/bash -d /home/git  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 切换到git用户</span></span><br><span class="line">su git &amp;&amp; cd ~</span><br><span class="line"><span class="meta">#</span><span class="bash">创建.ssh目录并且将权限修改为700</span></span><br><span class="line">mkdir .ssh &amp;&amp; chmod 700 .ssh</span><br><span class="line"><span class="meta">#</span><span class="bash">将Git客户端的公钥复制到.ssh目录，重命名为 authorized_keys</span></span><br><span class="line">echo '公钥....' &gt; .ssh/authorized_keys</span><br><span class="line"><span class="meta">#</span><span class="bash">权限修改为600</span></span><br><span class="line">chmod 600 .ssh/authorized_keys</span><br><span class="line"><span class="meta">#</span><span class="bash">客户端测试能否通过私钥登录git用户，不能就查看问题在哪儿</span></span><br><span class="line"><span class="meta">#</span><span class="bash">.....</span></span><br></pre></td></tr></table></figure></p>
-<p>之后在git用户下新建仓库</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">当前目录为~，用户为git</span></span><br><span class="line"><span class="meta">#</span><span class="bash">创建仓库文件夹并初始化仓库  --bare必需，不然后面push不方便</span></span><br><span class="line">mkdir blog.git &amp;&amp; cd blog.git &amp;&amp; git init --bare .git</span><br></pre></td></tr></table></figure>
-<p>客户端进行校验，看能否clone和push</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git clone git@xxx.xxx.xxx.xxx:blog.git</span><br><span class="line"><span class="meta">#</span><span class="bash">会显示一个warn，<span class="built_in">clone</span>一个空仓库,仓库名自动删除blog.git中的.git后缀</span></span><br><span class="line"><span class="meta">#</span><span class="bash">warning: You appear to have cloned an empty repository</span></span><br><span class="line"><span class="meta">#</span><span class="bash">测试push,</span></span><br><span class="line">cd blog &amp;&amp;  echo HelloWorld! &gt; hw</span><br><span class="line">git add .</span><br><span class="line">git commit -m "Initial commit"</span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
-<p>服务器查看push日志</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">当前环境 用户：git 目录：~</span></span><br><span class="line">cd blog.git &amp;&amp; git log </span><br><span class="line"><span class="meta">#</span><span class="bash">显示刚才提交的<span class="built_in">log</span>....</span></span><br></pre></td></tr></table></figure>
-<h2 id="采用https"><a href="#采用https" class="headerlink" title="采用https"></a>采用https</h2><p>//待续。。。</p>
-
+    
+    <a class="article-more-a" href="/2020/06/23/搭建自己的git服务器/#more">more >></a>
+    
     
 
     
@@ -1079,97 +1116,6 @@
 
 
   
-    <article id="post-自定义ClassLoader时候遇到的一个问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-  
-  
-    <h1 itemprop="name">
-	
-	  <a class="article-title" href="/2019/08/06/自定义ClassLoader时候遇到的一个问题/">自定义ClassLoader时候遇到的一个问题</a>
-	
-    </h1>
-  
-
-
-  
-  
-<a href="/2019/08/06/自定义ClassLoader时候遇到的一个问题/" class="archive-article-date">
-        <time datetime="2019-08-06T06:27:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-06</time>
-</a>
-
-  
-  
-  </header>
-  
-  <div class="article-entry" itemprop="articleBody">
-    
-    <p>在写自定义ClassLoader时候，发现报了个错,说是不能加载java.lang开头的类， 但是代码好像也没加载java.lang包的类啊</p>
-<p><img src="/2019/08/06/自定义ClassLoader时候遇到的一个问题/exception.png" alt="resloveStatement"><br><img src="/2019/08/06/自定义ClassLoader时候遇到的一个问题/code.png" alt="resloveStatement"></p>
-<p>查了一会儿，发现原来是java在用自定义ClassLoader加载类的时候，会重新用ClassLoader加载类的所有父类，所以就导致了重新加载java.lang.Object。</p>
-<p>加个判断，完事</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Class&lt;?&gt; loadClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">    System.out.println(name);</span><br><span class="line">    <span class="keyword">if</span> (name.startsWith(<span class="string">"java"</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.loadClass(name);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-    
-
-    
-
-    
-
-  </div>
-  <div class="article-info article-info-index">
-    
-    
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">jvm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">ClassLoader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-    
-
-    
-    <p class="article-more-link">
-      <a class="article-more-a" href="/2019/08/06/自定义ClassLoader时候遇到的一个问题/">展开全文 >></a>
-    </p>
-    
-
-    
-    <div class="clearfix"></div>
-  </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1307,15 +1253,15 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">javassist</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SSH</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">javassist</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1327,7 +1273,7 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">hello-world</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1335,15 +1281,11 @@
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">hello-world</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1351,15 +1293,23 @@
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">jvm</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">ClassLoader</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">ClassLoader</a>
               </li>
             
             <div class="clearfix"></div>

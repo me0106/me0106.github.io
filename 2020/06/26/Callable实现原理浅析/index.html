@@ -18,7 +18,7 @@
 <meta property="og:site_name" content="南楼">
 <meta property="og:description" content="一、实现线程的方式JSR133中规定到：  Threads are represented by the Thread class. The only way for a user to create a thread is to create an object of this class; each thread is associated with such an object. A thr">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-06-25T18:53:57.042Z">
+<meta property="og:updated_time" content="2020-06-30T15:04:50.894Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Callable实现原理浅析">
 <meta name="twitter:description" content="一、实现线程的方式JSR133中规定到：  Threads are represented by the Thread class. The only way for a user to create a thread is to create an object of this class; each thread is associated with such an object. A thr">
@@ -200,6 +200,7 @@
 <p>线程是用 Thread 类来表示的。用户创建一个线程 的唯一方式是创建一个该类的对象；每个线程都与这样一个对象相关联。在对应的 Thread 对象上调用 start()方法将启动线程。</p>
 </blockquote>
 <p>所以说，<strong>创建线程的唯一方式只有new Thread()</strong>，线程在调用<strong>Thread#start()</strong>方法后启动。</p>
+<a id="more"></a>
 <h2 id="二、实现Runnable-和继承Thread类的区别"><a href="#二、实现Runnable-和继承Thread类的区别" class="headerlink" title="二、实现Runnable 和继承Thread类的区别"></a>二、实现Runnable 和继承Thread类的区别</h2><p><strong>前提：</strong>在调用start方法启动一个线程后，目标线程将会执行Thread类的run方法。</p>
 <h3 id="1-继承Thread类"><a href="#1-继承Thread类" class="headerlink" title="1. 继承Thread类"></a>1. 继承Thread类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//该方法被调用</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        <span class="comment">//启动</span></span><br><span class="line">        <span class="keyword">new</span> MyThread().start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>所以调用流程如下：</p>
@@ -279,6 +280,15 @@
 
 
 <nav id="article-nav">
+  
+    <a href="/2020/06/30/关于策略模式一些思考/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          关于策略模式一些思考
+        
+      </div>
+    </a>
   
   
     <a href="/2020/06/23/搭建自己的git服务器/" id="article-nav-older" class="article-nav-link-wrap">
@@ -448,15 +458,15 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">javassist</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SSH</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">javassist</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -468,7 +478,7 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">hello-world</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -476,15 +486,11 @@
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">hello-world</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">逆向工程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -492,15 +498,23 @@
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">jvm</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">ClassLoader</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">ClassLoader</a>
               </li>
             
             <div class="clearfix"></div>
