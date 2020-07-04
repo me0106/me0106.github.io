@@ -6,17 +6,28 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018/2 | 南楼</title>
+  <title>在Java11下调用jdk.internal.misc.Unsafe的方式 | 南楼</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta property="og:type" content="website">
-<meta property="og:title" content="南楼">
-<meta property="og:url" content="http://yoursite.com/archives/2018/02/index.html">
+  <meta name="description" content="Java11的模块化Java9引入了的模块化相关的内容，将JDK的jar总共分为了module，将之前的Class和Class之间的依赖简化为module和module之间的依赖。每个模块由一个叫module-info.java的文件说明引入和导出相关的API。未导出的API无法在其他模块内被使用。 只有手动在module-info.java内声明，才可以被调用，并且只能声明那些已经导出的模块 。">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Java11下调用jdk.internal.misc.Unsafe的方式">
+<meta property="og:url" content="http://yoursite.com/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/index.html">
 <meta property="og:site_name" content="南楼">
+<meta property="og:description" content="Java11的模块化Java9引入了的模块化相关的内容，将JDK的jar总共分为了module，将之前的Class和Class之间的依赖简化为module和module之间的依赖。每个模块由一个叫module-info.java的文件说明引入和导出相关的API。未导出的API无法在其他模块内被使用。 只有手动在module-info.java内声明，才可以被调用，并且只能声明那些已经导出的模块 。">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704161632730.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704161907726.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704162003158.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704163251832.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704163507979.png">
+<meta property="og:updated_time" content="2020-07-04T09:15:43.946Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="南楼">
+<meta name="twitter:title" content="在Java11下调用jdk.internal.misc.Unsafe的方式">
+<meta name="twitter:description" content="Java11的模块化Java9引入了的模块化相关的内容，将JDK的jar总共分为了module，将之前的Class和Class之间的依赖简化为module和module之间的依赖。每个模块由一个叫module-info.java的文件说明引入和导出相关的API。未导出的API无法在其他模块内被使用。 只有手动在module-info.java内声明，才可以被调用，并且只能声明那些已经导出的模块 。">
+<meta name="twitter:image" content="http://yoursite.com/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704161632730.png">
   
   
     <link rel="icon" href="/favicon.ico">
@@ -162,69 +173,120 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-在Java11下调用jdk-internal-misc-Unsafe的方式" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
   
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2018/02/17/SSH免密登陆/" class="archive-article-date">
-        <time datetime="2018-02-17T13:07:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-17</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2018/02/17/SSH免密登陆/">SSH免密登陆</a>
-	
+    <h1 class="article-title" itemprop="name">
+      在Java11下调用jdk.internal.misc.Unsafe的方式
     </h1>
   
 
 
-        <div class="article-info info-on-right">
-          
+  
+  
+<a href="/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/" class="archive-article-date">
+        <time datetime="2020-07-03T16:45:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-04</time>
+</a>
+
+  
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h2 id="Java11的模块化"><a href="#Java11的模块化" class="headerlink" title="Java11的模块化"></a>Java11的模块化</h2><p>Java9引入了的模块化相关的内容，将JDK的jar总共分为了module，将之前的Class和Class之间的依赖简化为module和module之间的依赖。每个模块由一个叫module-info.java的文件说明引入和导出相关的API。<strong>未导出的API无法在其他模块内被使用</strong>。</p>
+<p>只有手动在module-info.java内声明，才可以被调用，并且只能声明那些已经导出的模块 。而jdk为了安全考虑，并<strong>没有导出jdk.internal.misc.Unsafe</strong>。</p>
+<h2 id="Unsafe类"><a href="#Unsafe类" class="headerlink" title="Unsafe类"></a>Unsafe类</h2><p>​        Jdk中的Unsafe类有两个分别是 sun.misc.Unsafe和 jdk.internal.misc.Unsafe。</p>
+<p>​        1. <strong>sun.misc.Unsafe</strong>：该类是对 jdk.internal.misc.Unsafe再封装，开放了一些不那么’unsafe’的API。</p>
+<p>​        2. jdk.internal.misc.Unsafe，该类并未导出，甚至无法直接import，<img src="/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704161632730.png" alt="image-20200704161632730"></p>
+<p>​    试一下反射调用：</p>
+<p><img src="/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704161907726.png" alt="image-20200704161907726" style="zoom:80%;"></p>
+<a id="more"></a>
+<p>​    结果：</p>
+<p><img src="/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704162003158.png" alt="image-20200704162003158" style="zoom:80%;"></p>
+<p>​        可以看见，该类甚至无法进行setAccessible操作(堆栈省略，其起始点是theUnsafe.setAccessible())</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>​    我们无法直接从jdk.internal.misc.Unsafe类获取其实例，但是sun.misc.Unsafe是存在前者的一个实例，名为<em>theInternalUnsafe</em>，实例有了，试试用反射调用其方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> var field = Unsafe.class.getDeclaredField(<span class="string">"theInternalUnsafe"</span>);</span><br><span class="line">field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line"><span class="keyword">final</span> var theInternalUnsafe = field.get(<span class="keyword">null</span>);</span><br><span class="line">Class.forName(<span class="string">"jdk.internal.misc.Unsafe"</span>)</span><br><span class="line">        .getDeclaredMethod(<span class="string">"allocateMemory"</span>, <span class="keyword">long</span>.class)</span><br><span class="line">        .invoke(theInternalUnsafe, <span class="number">100</span>);</span><br></pre></td></tr></table></figure>
+<p>​    结果依旧不行:</p>
+<p><img src="/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704163251832.png" alt="image-20200704163251832" style="zoom:80%;"></p>
+<p>​    我们尝试分析拦截点：</p>
+<p><img src="/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704163507979.png" alt="image-20200704163507979" style="zoom:80%;">        </p>
+<p>​        有一个override属性，目前还不清楚这个属性是干什么的，但是我们可以看出属性如果为false，则进行调用检查。那么，我们是不是可以将其属性修改为true呢，可以。但是传统的setAccessible肯定不行，这时候我们可以用已暴露的sun.misc.Usafe进行属性 设置，该类putBoolean可以直接绕过访问检查。</p>
+<h2 id="最终实现"><a href="#最终实现" class="headerlink" title="最终实现"></a>最终实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> var fileReader = <span class="keyword">new</span> FileInputStream(<span class="keyword">new</span> File(<span class="string">"C:\\Users\\me\\Desktop\\Run.class"</span>));</span><br><span class="line">    <span class="keyword">final</span> var bytes1 = fileReader.readAllBytes();</span><br><span class="line">    Class&lt;?&gt;[] clazz = &#123;String.class, <span class="keyword">byte</span>[].class, <span class="keyword">int</span>.class, <span class="keyword">int</span>.class, ClassLoader.class, ProtectionDomain.class&#125;;</span><br><span class="line">    <span class="comment">//此处调用，以上为组织参数</span></span><br><span class="line">    <span class="keyword">final</span> var invoke = invoke(<span class="string">"defineClass"</span>, clazz, <span class="string">"Run"</span>, bytes1, <span class="number">0</span>, bytes1.length, Main.class.getClassLoader(), <span class="keyword">null</span>);</span><br><span class="line">    System.out.println(((Class&lt;?&gt;) invoke).newInstance());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Unsafe SUN_MISC_UNSAFE;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object JDK_INTERNAL_MISC_UNSAFE;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        SUN_MISC_UNSAFE = smUnsafe();</span><br><span class="line">        JDK_INTERNAL_MISC_UNSAFE = jimUnsafe();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ReflectiveOperationException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">invoke</span><span class="params">(String methodName, Class&lt;?&gt;[] clazz, Object... params)</span> <span class="keyword">throws</span> ReflectiveOperationException </span>&#123;</span><br><span class="line">    <span class="comment">//获取方法</span></span><br><span class="line">    <span class="keyword">final</span> var method = JDK_INTERNAL_MISC_UNSAFE.getClass().getDeclaredMethod(methodName, clazz);</span><br><span class="line">    <span class="comment">//重写override</span></span><br><span class="line">    setOverride(method);</span><br><span class="line">    <span class="comment">//调用</span></span><br><span class="line">    <span class="keyword">return</span> method.invoke(JDK_INTERNAL_MISC_UNSAFE, params);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**核心是这一步，利用sun.misc.Unsafe进行override修改。*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setOverride</span><span class="params">(Method method)</span> <span class="keyword">throws</span> ReflectiveOperationException </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> var override = AccessibleObject.class.getDeclaredField(<span class="string">"override"</span>);</span><br><span class="line">    <span class="keyword">final</span> var l = SUN_MISC_UNSAFE.objectFieldOffset(override);</span><br><span class="line">    SUN_MISC_UNSAFE.putBoolean(method, l, <span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**获取sun.misc.Unsafe*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Unsafe <span class="title">smUnsafe</span><span class="params">()</span> <span class="keyword">throws</span> ReflectiveOperationException </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Class&lt;?&gt; smu = Class.forName(<span class="string">"sun.misc.Unsafe"</span>);</span><br><span class="line">    <span class="keyword">final</span> var theUnsafe = smu.getDeclaredField(<span class="string">"theUnsafe"</span>);</span><br><span class="line">    theUnsafe.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">return</span> (Unsafe) theUnsafe.get(<span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/** 获取jdk.internal.misc.Unsafe */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">jimUnsafe</span><span class="params">()</span> <span class="keyword">throws</span> ReflectiveOperationException </span>&#123;</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">final</span> Class&lt;?&gt; smu = Class.forName(<span class="string">"sun.misc.Unsafe"</span>);</span><br><span class="line">    <span class="keyword">final</span> var field = smu.getDeclaredField(<span class="string">"theInternalUnsafe"</span>);</span><br><span class="line">    field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">return</span> field.get(<span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">SSH</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+    
 
     
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2020/06/30/关于策略模式一些思考/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">关于策略模式一些思考</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
           </div>
@@ -253,8 +315,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
