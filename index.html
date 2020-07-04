@@ -197,11 +197,10 @@
     
     <h2 id="Java11的模块化"><a href="#Java11的模块化" class="headerlink" title="Java11的模块化"></a>Java11的模块化</h2><p>Java9引入了的模块化相关的内容，将JDK的jar总共分为了module，将之前的Class和Class之间的依赖简化为module和module之间的依赖。每个模块由一个叫module-info.java的文件说明引入和导出相关的API。<strong>未导出的API无法在其他模块内被使用</strong>。</p>
 <p>只有手动在module-info.java内声明，才可以被调用，并且只能声明那些已经导出的模块 。而jdk为了安全考虑，并<strong>没有导出jdk.internal.misc.Unsafe</strong>。</p>
-<h2 id="Unsafe类"><a href="#Unsafe类" class="headerlink" title="Unsafe类"></a>Unsafe类</h2><p>​        Jdk中的Unsafe类有两个分别是 sun.misc.Unsafe和 jdk.internal.misc.Unsafe。</p>
-<p>​        1. <strong>sun.misc.Unsafe</strong>：该类是对 jdk.internal.misc.Unsafe再封装，开放了一些不那么’unsafe’的API。</p>
-<p>​        2. jdk.internal.misc.Unsafe，该类并未导出，甚至无法直接import，<img src="/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704161632730.png" alt="image-20200704161632730"></p>
-<p>​    试一下反射调用：</p>
-<p><img src="/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/image-20200704161907726.png" alt="image-20200704161907726" style="zoom:80%;"></p>
+<h2 id="Unsafe类"><a href="#Unsafe类" class="headerlink" title="Unsafe类"></a>Unsafe类</h2><pre><code>Jdk中的Unsafe类有两个分别是 sun.misc.Unsafe和 jdk.internal.misc.Unsafe。
+</code></pre><p>​    <strong>sun.misc.Unsafe</strong>：该类是对 jdk.internal.misc.Unsafe再封装，开放了一些不那么’unsafe’的API。</p>
+<p>​    <strong>jdk.internal.misc.Unsafe</strong>，该类并未导出，甚至无法import。</p>
+<p>​    sun.misc.Unsafe实例可以通过反射拿到其单例对象，可以直接进行方法调用。<br>​    但是jdk.internal.misc.Unsafe拿到实例后也无法正常用。因为无法import；想要调用只能通过反射，但是反射调用又需要进行权限检查，这看起来似乎无解。但是jdk依旧给我们留了一个口子: <strong>sun.misc.Unsafe类进行属性设置的时候是无视权限检查的</strong>；这时候我们可以分析反射调用时权限检查相关的代码，进行绕过。</p>
     
     <a class="article-more-a" href="/2020/07/04/在Java11下调用jdk-internal-misc-Unsafe的方式/#more">more >></a>
     
@@ -1259,19 +1258,19 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Fastjson</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SSH</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Fastjson</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1291,11 +1290,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jvm</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color4">jvm</a>
               </li>
              
               <li class="article-tag-list-item">
